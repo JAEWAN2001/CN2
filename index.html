@@ -1,316 +1,2203 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TEPS 단어 짝맞추기</title>
-    <style>
-        :root { --main-yellow: #FFD700; --bg-paper: #fdfdfd; --line-gray: #e0e0e0; --text-dark: #333; }
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #d1d1d1; display: flex; justify-content: center; margin: 0; padding: 20px; }
-        
-        /* 전체 컨테이너 (스마트폰 화면 느낌) */
-        .phone-screen { background: #333; padding: 10px; border-radius: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 400px; }
-        .app-container { background: var(--bg-paper); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; min-height: 650px; position: relative; }
-        
-        /* 상단 바 */
-        .header { background: #2c3e50; color: var(--main-yellow); padding: 15px; text-align: center; font-weight: bold; font-size: 1.1rem; }
-        
-        /* 문제 영역 */
-        .quiz-body { flex: 1; padding: 20px; display: flex; justify-content: space-between; gap: 10px; background-image: linear-gradient(var(--line-gray) 1px, transparent 1px); background-size: 100% 40px; }
-        .column { width: 48%; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
-        
-        /* 카드 스타일 */
-        .card { background: white; border: 1px solid #ccc; border-radius: 8px; padding: 15px 5px; text-align: center; cursor: pointer; font-size: 0.9rem; transition: 0.2s; min-height: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.05); word-break: keep-all; font-weight: 500; }
-        .card:hover { transform: translateY(-2px); }
-        
-        /* 상태별 카드 색상 */
-        .card.selected { background-color: var(--main-yellow); border-color: #d4af37; box-shadow: inset 0 0 5px rgba(0,0,0,0.1); }
-        .card.correct { background-color: #a2ffaf !important; border-color: #2ecc71 !important; color: #155724 !important; pointer-events: none; opacity: 0.8; }
-        .card.correct::after { content: ' ✓'; margin-left: 5px; font-weight: bold; }
-        .shake { animation: shake 0.3s; border-color: #e74c3c !important; }
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-        
-        /* 하단 버튼 */
-        .footer { padding: 15px; background: #eee; text-align: center; }
-        #next-btn { background: var(--main-yellow); border: none; padding: 12px 30px; font-weight: bold; border-radius: 50px; cursor: pointer; font-size: 1rem; box-shadow: 0 4px #b8860b; }
-        #next-btn:active { transform: translateY(2px); box-shadow: 0 2px #b8860b; }
-        .progress-text { font-size: 0.8rem; color: #777; margin-bottom: 10px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="description" content="컴퓨터 네트워킹 중간고사 예상문제 90개로 연습하는 오프라인 5지선다 게임. 챕터별 학습, 전 범위 실전, 오답 재도전을 지원합니다.">
+<title>NET QUEST · 컴퓨터 네트워킹 중간고사</title>
+<style>
+:root{--ink:#172941;--muted:#627286;--bg:#f3f6fa;--paper:#fff;--line:#dbe4ee;--navy:#12263d;--blue:#2464dc;--blue-soft:#edf3ff;--teal:#087d72;--teal-soft:#e9f7f3;--red:#b34248;--red-soft:#fff0f0;--amber:#895509;--amber-soft:#fff5df;--radius:20px;--shadow:0 8px 32px #18314509}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:15px;line-height:1.6}button,input,select{font:inherit}button,a,input,select{-webkit-tap-highlight-color:transparent}button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.46}button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #4e86ef;outline-offset:3px}[hidden]{display:none!important}h1,h2,h3,h4,p{margin:0}h1,h2,h3{letter-spacing:-.04em}button{transition:background .15s,border .15s,transform .15s}button:active:not(:disabled){transform:translateY(1px)}strong{font-weight:800}svg{display:block}a{color:var(--blue)}.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.skip-link{position:absolute;left:20px;top:-60px;background:white;padding:10px;z-index:10}.skip-link:focus{top:10px}
+.topbar{background:#fff;border-bottom:1px solid var(--line)}.topbar-inner{max-width:1240px;margin:auto;min-height:76px;padding:12px 24px;display:flex;align-items:center;gap:16px}.logo{display:flex;gap:11px;align-items:center;border:0;background:none;padding:0;color:var(--ink);text-align:left}.logo-mark{height:40px;width:40px;background:var(--navy);color:#91e5d0;border-radius:12px;display:grid;place-items:center;font-size:19px;font-weight:850;letter-spacing:-2px}.logo-name{font-size:18px;font-weight:850;letter-spacing:1.1px;line-height:1.2}.logo-sub{font-size:11px;color:var(--muted);letter-spacing:.06em}.topbar-end{margin-left:auto;display:flex;align-items:center;gap:9px}.offline{font-size:11px;letter-spacing:.06em;color:var(--teal);margin-right:7px}.offline::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-right:6px}.ghost,.secondary,.primary,.danger-btn{border-radius:11px;padding:10px 15px;font-weight:700;line-height:1.45;border:1px solid var(--line);background:#fff;color:var(--ink)}.ghost{background:transparent;padding:8px 12px;font-size:13px}.ghost:hover,.secondary:hover{background:#f0f4f9}.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.primary:hover{background:#1e52bc;border-color:#1e52bc}.danger-btn{color:var(--red);background:var(--red-soft);border-color:#f0c9cc}.small{font-size:12px}.muted{color:var(--muted)}.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.subtext{font-size:13px;color:var(--muted);margin-top:5px}.badge{display:inline-flex;align-items:center;padding:4px 9px;border-radius:7px;background:#f0f4f8;color:#50647c;font-size:11px;font-weight:750;line-height:1.4}.badge.core{background:var(--blue-soft);color:#2956a5}.badge.extra{background:#f2eefa;color:#65538b}.badge.paper{background:#fff2d8;color:#855a12}.badge.chapter{background:#e8f5f3;color:#0b766a}.status-banner{max-width:1192px;margin:12px auto 0;padding:10px 16px;border:1px solid #e3c898;background:var(--amber-soft);color:var(--amber);border-radius:12px;font-size:13px}.app{max-width:1240px;margin:0 auto;padding:26px 24px 48px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .8fr;gap:28px;padding:32px 36px;background:var(--navy);color:#fff;border-radius:24px;margin-bottom:24px;min-height:244px}.hero:after{content:"";position:absolute;right:-100px;top:-200px;width:600px;height:600px;border:1px solid #ffffff0c;border-radius:50%;pointer-events:none}.hero .eyebrow{color:#9fdcca;margin-bottom:12px}.hero h1{font-size:clamp(25px,3vw,36px);line-height:1.3;font-weight:850}.hero p{margin-top:12px;max-width:560px;color:#c5d4e4;font-size:14px}.hero-tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.hero-tags span{border:1px solid #c1dfef2e;background:#d9eeff0b;color:#e1edf8;border-radius:6px;font-size:11px;padding:4px 9px}.network-map{display:flex;align-items:center;justify-content:center;min-width:0}.network-map svg{max-width:310px;width:100%;height:172px}.map-label{font-size:11px;fill:#d4e5ee}.map-num{font-size:13px;font-weight:800;fill:#a6e7d5}.dashboard{display:grid;grid-template-columns:285px minmax(0,1fr);gap:24px}.progress-panel{padding:22px}.profile-row{display:flex;gap:12px;align-items:center}.profile-icon{height:46px;width:46px;border-radius:14px;background:var(--teal-soft);display:grid;place-items:center;color:var(--teal);font-size:23px}.level-name{font-size:14px;font-weight:800}.level-number{font-size:12px;color:var(--muted)}.xp-row{display:flex;justify-content:space-between;align-items:center;margin-top:18px;font-size:11px;color:var(--muted)}.xp-row strong{font-size:18px;color:var(--ink)}.track{height:6px;background:#e9eef5;border-radius:8px;overflow:hidden;margin-top:7px}.track i{display:block;background:var(--teal);height:100%;width:0;border-radius:8px;transition:width .25s}.stats-mini{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:17px 0;margin:20px 0}.stats-mini div{text-align:center}.stats-mini strong{display:block;font-size:21px;line-height:1.3}.stats-mini span{font-size:11px;color:var(--muted)}.side-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:13px}.chapter-progress{margin-top:14px}.chapter-progress .row{display:flex;justify-content:space-between;font-size:12px;gap:10px}.chapter-progress .row span:last-child{color:var(--muted);font-variant-numeric:tabular-nums}.chapter-progress .track{height:4px}.side-actions{display:grid;gap:8px;margin-top:22px}.side-actions button{font-size:12px;width:100%}.storage-info{font-size:11px;color:var(--muted);margin-top:15px;line-height:1.65}.data-tools{display:flex;gap:3px;flex-wrap:wrap;margin-top:10px}.data-tools button{font-size:11px;padding:5px 8px}.reset-link{color:var(--red)}.history-box{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}.history-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;margin-top:8px;gap:8px}.history-row strong{white-space:nowrap;color:var(--ink)}
+.setup-panel{padding:28px}.section-header{display:flex;justify-content:space-between;align-items:center;gap:10px}.section-header h2{font-size:20px}.mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:20px}.mode-btn{border:1px solid var(--line);background:#fff;border-radius:13px;text-align:left;padding:15px 13px;color:var(--ink);position:relative}.mode-btn b{display:block;font-size:14px}.mode-btn span{font-size:11px;color:var(--muted);display:block;margin-top:4px}.mode-btn.active{border-color:var(--blue);background:var(--blue-soft);box-shadow:inset 0 0 0 1px var(--blue)}.mode-symbol{font-size:19px;margin-bottom:6px;color:var(--blue)}.mode-desc{background:#f7f9fc;color:var(--muted);padding:11px 13px;border-radius:10px;font-size:12px;margin:14px 0 22px}.filter-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.filter-header h3{font-size:13px}.chapter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.chapter-check{border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:9px;background:#fff;cursor:pointer;min-height:59px}.chapter-check:has(input:checked){background:#f4f8ff;border-color:#b9ccee}.chapter-check:has(input:disabled){cursor:default}.chapter-check input{width:16px;height:16px;accent-color:var(--blue);margin:0;flex-shrink:0}.chapter-check b{font-size:12px;font-weight:750;display:block;line-height:1.4}.chapter-check small{font-size:10px;display:block;color:var(--muted);margin-top:2px}.range-note{color:var(--muted);font-size:11px;margin-top:8px}.select-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:20px}.field label{display:block;font-size:12px;font-weight:750;margin-bottom:7px}.field select{width:100%;padding:10px 30px 10px 11px;border:1px solid #ced9e7;border-radius:9px;background:#fff;color:var(--ink);font-size:13px}.field:has(select:disabled){opacity:.65}.pool-summary{display:flex;gap:10px;align-items:flex-start;background:var(--teal-soft);border-radius:12px;padding:12px 14px;margin-top:20px;font-size:12px;color:var(--teal)}.pool-summary.warning{background:var(--amber-soft);color:var(--amber)}.pool-summary strong{display:block;font-size:13px}.pool-summary small{display:block;font-size:11px;margin-top:3px}.start-row{display:flex;gap:10px;margin-top:18px;align-items:center}.start-row .primary{flex:1;padding:14px 20px;font-size:15px}.start-row .primary span{margin-left:7px}.save-card{padding:13px 15px;border:1px solid #bcd0ef;background:#f6f9ff;border-radius:12px;display:flex;align-items:center;gap:12px;margin-top:16px}.save-card .copy{flex:1}.save-card b{display:block;font-size:12px}.save-card small{color:var(--muted);font-size:11px;display:block}.footer-note{font-size:11px;color:var(--muted);margin-top:20px;border-top:1px solid var(--line);padding-top:16px;line-height:1.75}
+.play-heading{display:flex;gap:16px;align-items:center;margin-bottom:18px}.play-heading h1{font-size:22px}.play-heading .back-label{font-size:11px;color:var(--muted)}.play-actions{margin-left:auto;display:flex;gap:7px}.play-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}.stat-card{padding:12px 17px;border-radius:13px;background:#fff;border:1px solid var(--line)}.stat-card small{display:block;font-size:11px;color:var(--muted)}.stat-card strong{font-size:22px;font-weight:850;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.stat-card strong small{display:inline;font-size:13px;color:var(--muted);margin-left:4px}.stat-card.timer-alert{border-color:#d68489;background:var(--red-soft)}.play-layout{display:grid;grid-template-columns:minmax(0,1fr) 256px;gap:22px;align-items:start}.question-panel{padding:28px 30px}.q-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:17px}.q-badges{display:flex;gap:7px;flex-wrap:wrap}.bookmark{white-space:nowrap;font-size:12px;color:#7a6844}.bookmark.on{background:#fff4dd;border-color:#e5c483;color:#8a5c06}.q-stem{font-size:20px;font-weight:750;line-height:1.6;letter-spacing:-.035em;white-space:pre-line;outline:none}.q-stem:focus{outline:none}.q-figure{margin:18px 0}.q-figure svg{width:100%;max-height:165px}.options{display:grid;gap:10px;margin-top:23px}.choice{width:100%;border:1px solid var(--line);background:#fff;display:flex;align-items:flex-start;gap:13px;border-radius:12px;padding:14px 16px;color:var(--ink);text-align:left;line-height:1.6;font-size:14px;opacity:1!important}.choice:not(:disabled):hover{background:#f5f8fe;border-color:#a7bfe6}.choice.selected{border-color:var(--blue);background:var(--blue-soft);box-shadow:inset 0 0 0 1px var(--blue)}.choice .number{flex:0 0 25px;width:25px;height:25px;border:1px solid #cbd7e4;background:#fff;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#61738a;line-height:1;margin-top:0}.choice.selected .number{background:var(--blue);color:#fff;border-color:var(--blue)}.choice .option-copy{flex:1;min-width:0;overflow-wrap:anywhere}.choice .label-state{font-size:11px;font-weight:800;white-space:nowrap;margin-left:auto;line-height:25px}.choice.right{border-color:#279784;background:#edf9f5;box-shadow:inset 0 0 0 1px #279784}.choice.right .number{background:var(--teal);border-color:var(--teal);color:#fff}.choice.right .label-state{color:var(--teal)}.choice.wrong{border-color:#d3797f;background:var(--red-soft);box-shadow:inset 0 0 0 1px #d3797f}.choice.wrong .number{background:var(--red);border-color:var(--red);color:#fff}.choice.wrong .label-state{color:var(--red)}.choice.wave-choice .option-copy>span{font-family:ui-monospace,Consolas,monospace;font-size:11px;letter-spacing:.03em;display:block;overflow-wrap:anywhere}.wave-svg{width:100%;height:84px;margin-top:4px}.wave-text{font-size:11px;fill:#63728a}.feedback{padding:18px 20px;border-radius:13px;margin-top:20px;border:1px solid #b6dacf;background:#f0f9f5}.feedback.wrong{background:#fff8f7;border-color:#e9c6c5}.feedback-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;color:var(--teal);font-size:15px;font-weight:850}.feedback.wrong .feedback-heading{color:var(--red)}.feedback .xp-award{font-size:12px}.feedback .explanation{font-size:14px;line-height:1.85}.feedback strong{color:#155345}.feedback.wrong strong{color:#873942}.trap{font-size:12px;color:#6b6259;margin-top:10px;padding-top:10px;border-top:1px solid #d2dacf}.source{font-size:11px;color:var(--muted);margin-top:12px;line-height:1.7}.source b{color:var(--ink)}.figure-answer{background:#fff9;padding:8px 12px;border-radius:9px;margin-top:10px}.figure-answer b{font-size:11px}.game-bottom{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding-top:20px;margin-top:24px}.game-bottom .primary{margin-left:auto;min-width:145px}.key-hint{font-size:11px;color:var(--muted);margin-top:14px;text-align:center}kbd{padding:1px 5px;border:1px solid #d5dfea;border-bottom-width:2px;border-radius:4px;background:#fff;font-size:10px;font-family:inherit;color:#52677e}.exam-saved{font-size:12px;color:var(--blue);margin-top:14px;min-height:20px}.nav-panel{padding:19px;position:sticky;top:20px}.nav-panel h2{font-size:14px}.nav-summary{font-size:11px;color:var(--muted);margin:6px 0 15px}.nav-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-height:390px;overflow:auto;padding:3px}.nav-q{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--muted);font-size:11px;font-weight:700}.nav-q.current{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue)}.nav-q.correct{background:var(--teal-soft);color:var(--teal);border-color:#afd6ca}.nav-q.incorrect{background:var(--red-soft);color:var(--red);border-color:#e6bdbd}.nav-q.responded{background:var(--blue-soft);color:var(--blue);border-color:#b7cbef}.nav-q.flagged:after{content:"";position:absolute;right:3px;top:3px;width:5px;height:5px;background:#d59b2c;border-radius:50%}.nav-legend{font-size:10px;color:var(--muted);margin-top:13px;line-height:1.8}.nav-legend span{display:inline-block;margin-right:8px}.legend-dot{display:inline-block;width:6px;height:6px;border-radius:2px;margin-right:4px}.nav-tip{font-size:11px;line-height:1.75;border-top:1px solid var(--line);margin-top:15px;padding-top:15px;color:var(--muted)}.nav-tip strong{color:var(--ink)}.scratch{margin-top:18px}.scratch label{font-size:11px;font-weight:700;display:block;margin-bottom:7px}.scratch textarea{width:100%;min-height:100px;resize:vertical;padding:10px;border:1px solid var(--line);border-radius:8px;font:12px/1.7 inherit;background:#fbfcfe;color:var(--ink)}.scratch small{color:var(--muted);font-size:10px}
+.results-heading{display:flex;align-items:center;gap:14px;margin-bottom:22px}.results-heading h1{font-size:24px}.results-heading .ghost{margin-left:auto}.result-top{display:grid;grid-template-columns:190px 1fr;align-items:center;gap:30px;padding:30px 36px}.score-dial{height:156px;width:156px;margin:auto;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--teal) var(--score-angle,0deg),#e9eff5 0);position:relative}.score-dial:before{content:"";position:absolute;inset:9px;background:#fff;border-radius:50%}.score-dial .score-label{position:relative;text-align:center}.score-dial strong{display:block;font-size:43px;line-height:1.2;font-weight:850;letter-spacing:-2px}.score-dial span{font-size:11px;color:var(--muted)}.result-copy .eyebrow{color:var(--teal);margin-bottom:7px}.result-copy h2{font-size:26px}.result-copy p{font-size:13px;color:var(--muted);margin:8px 0 18px}.result-chips{display:flex;flex-wrap:wrap;gap:8px}.result-chips span{background:#f2f5f9;border-radius:8px;padding:6px 11px;font-size:12px}.result-chips strong{color:var(--ink)}.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.breakdown{padding:24px 26px;margin-top:22px}.breakdown h2{font-size:17px}.breakdown-table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}.breakdown-table th{color:var(--muted);font-size:11px;text-align:left;font-weight:650;background:#f6f8fb;padding:10px}.breakdown-table td{border-bottom:1px solid #edf0f5;padding:11px 10px}.breakdown-table td:last-child{width:32%}.breakdown-table .track{margin:0;display:inline-block;width:70%;vertical-align:middle}.breakdown-table .percent{margin-left:7px;font-size:11px;color:var(--muted)}.review-panel{margin-top:24px;padding:24px 26px}.review-controls{display:flex;gap:10px;align-items:center;margin:15px 0}.review-controls input{min-width:0;flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:12px}.review-controls select{padding:9px;border:1px solid var(--line);border-radius:9px;font-size:12px}.review-card{border:1px solid var(--line);border-radius:11px;margin-top:9px;background:#fff;overflow:hidden}.review-card summary{padding:14px 16px;cursor:pointer;font-size:13px;display:flex;gap:9px;align-items:center;list-style:none}.review-card summary::-webkit-details-marker{display:none}.review-card summary:after{content:"+";margin-left:auto;color:var(--muted);font-size:18px}.review-card[open] summary:after{content:"−"}.review-card .dot-result{font-size:11px;font-weight:800;white-space:nowrap}.dot-result.ok{color:var(--teal)}.dot-result.bad{color:var(--red)}.review-content{padding:0 16px 16px;font-size:13px}.review-content .stem{font-weight:700;margin-bottom:12px;white-space:pre-line}.review-answer{padding:10px 12px;border-radius:8px;background:var(--teal-soft);margin:8px 0;color:#215c50}.review-mine{font-size:12px;color:var(--red);margin-top:8px}.review-content .explanation{margin-top:11px;line-height:1.85}.empty-state{padding:28px 15px;text-align:center;font-size:13px;color:var(--muted)}.app-footer{text-align:center;margin-top:28px;color:var(--muted);font-size:11px}
+dialog{padding:0;border:1px solid var(--line);border-radius:20px;width:min(600px,calc(100% - 32px));max-height:85vh;box-shadow:0 30px 100px #12263d40;background:#fff;color:var(--ink)}dialog::backdrop{background:#10263f80;backdrop-filter:blur(3px)}.modal-head{padding:21px 24px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;position:sticky;top:0;background:#fff;z-index:1}.modal-head h2{font-size:19px}.modal-body{padding:20px 24px;font-size:13px;line-height:1.9}.modal-body h3{font-size:14px;margin-top:17px;margin-bottom:5px}.modal-body h3:first-child{margin-top:0}.modal-body p{margin-bottom:9px}.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:16px 24px 22px}.modal-body .source{margin-top:8px}.modal-questions{max-height:52vh;overflow:auto}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);padding:11px 20px;border-radius:12px;background:var(--navy);color:#fff;box-shadow:0 8px 30px #0002;max-width:min(90vw,600px);z-index:20;font-size:13px;text-align:center}.confetti-line{height:4px;border-radius:3px;background:linear-gradient(90deg,#28a78b,#467cdf,#a17dc8);margin-bottom:20px}.notice{background:var(--amber-soft);padding:11px 14px;border-radius:9px;color:#775421;font-size:12px;margin:12px 0}.divider{height:1px;background:var(--line);margin:17px 0}
+@media(max-width:1020px){.dashboard{grid-template-columns:240px minmax(0,1fr);gap:18px}.hero{padding:28px}.setup-panel{padding:23px}.play-layout{grid-template-columns:minmax(0,1fr) 210px;gap:16px}.nav-panel{padding:14px}.chapter-grid{grid-template-columns:repeat(2,1fr)}.mode-btn{padding:12px 10px}.mode-btn span{font-size:10px}.question-panel{padding:24px}.select-grid{gap:8px}}
+@media(max-width:760px){.topbar-inner{padding:12px 16px;min-height:66px}.logo-name{font-size:15px}.logo-sub{font-size:10px}.offline{display:none}.topbar-end{gap:4px}.topbar-end .ghost{font-size:11px;padding:8px}.app{padding:18px 14px 32px}.hero{grid-template-columns:1fr;padding:24px;min-height:unset}.hero h1{font-size:29px}.network-map{display:none}.hero p{font-size:13px}.dashboard{grid-template-columns:1fr}.progress-panel{order:2;padding:20px}.setup-panel{order:1;padding:20px}.side-chapters{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}.stats-mini{margin:15px 0}.side-actions{display:flex}.side-actions button{flex:1}.select-grid{grid-template-columns:1fr 1fr}.timer-field{grid-column:1 / -1}.play-heading{flex-wrap:wrap;gap:9px}.play-heading h1{font-size:18px}.play-actions{margin-left:auto}.play-actions .ghost{font-size:11px;padding:8px}.play-stats{gap:7px;margin-bottom:13px}.stat-card{padding:9px 10px}.stat-card strong{font-size:19px}.stat-card small{font-size:10px}.play-layout{grid-template-columns:1fr}.question-panel{padding:20px 17px}.q-stem{font-size:18px}.q-top{gap:8px;margin-bottom:13px}.q-badges{gap:5px}.badge{font-size:10px}.bookmark{font-size:11px;padding:7px 8px}.choice{font-size:13px;padding:12px 11px;gap:9px}.choice .number{flex-basis:23px;height:23px}.choice .label-state{font-size:10px}.feedback{padding:15px}.feedback .explanation{font-size:13px}.game-bottom{flex-wrap:wrap;gap:7px}.game-bottom button{font-size:12px;padding:10px 12px}.game-bottom .primary{min-width:120px}.nav-panel{position:static;padding:18px}.nav-grid{grid-template-columns:repeat(10,1fr);max-height:190px}.scratch{display:none}.nav-tip{display:none}.result-top{grid-template-columns:1fr;padding:25px;gap:20px;text-align:center}.result-chips{justify-content:center}.result-actions button{font-size:12px;flex:1;min-width:135px}.breakdown,.review-panel{padding:20px 16px}.result-copy h2{font-size:22px}.breakdown-table th,.breakdown-table td{padding:9px 5px;font-size:11px}.breakdown-table .track{width:52%}.review-controls{flex-wrap:wrap}.review-controls input{flex-basis:100%}.save-card{padding:11px}.save-card .secondary{font-size:11px;padding:9px}.review-card summary{font-size:12px;padding:12px}.review-content{font-size:12px}.modal-head{padding:17px 18px}.modal-body{padding:17px 18px}.modal-foot{padding:14px 18px 18px}.key-hint{display:none}}
+@media(max-width:390px){.logo-sub{display:none}.mode-grid{gap:6px}.mode-btn b{font-size:12px}.mode-btn span{line-height:1.6}.chapter-check{padding:8px;gap:7px}.chapter-check b{font-size:11px}.play-stats{grid-template-columns:repeat(2,1fr)}.nav-grid{grid-template-columns:repeat(8,1fr)}.topbar-end .ghost{padding:7px}.hero h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{body{background:#fff}.topbar,.hero,.play-actions,.result-actions,.review-controls,.app-footer,.toast,dialog,.progress-panel{display:none!important}.app{padding:0;max-width:100%}.panel{box-shadow:none;border-color:#ccc}.review-card{break-inside:avoid}.review-card .review-content{display:block!important}.review-card summary{font-weight:bold}.results-heading .ghost{display:none}.result-top{grid-template-columns:160px 1fr}.breakdown{break-inside:avoid}}
+</style>
 </head>
 <body>
-    <div class="phone-screen">
-        <div class="app-container">
-            <div class="header">짝맞추기 챌린지 (UNIT 02)</div>
-            <div class="quiz-body">
-                <div class="column" id="en-col"></div>
-                <div class="column" id="ko-col"></div>
-            </div>
-            <div class="footer">
-                <div class="progress-text" id="status-text">로딩 중...</div>
-                <button id="next-btn" onclick="startNewSet()">다음 문제 (5개)</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // PDF에서 추출한 117개 단어 데이터 전체
-        const fullWordList = [
-            // # 범죄
-            {en: "crime", ko: "범죄"},
-            {en: "criminal", ko: "범죄자"},
-            {en: "abuse", ko: "학대, 남용"},
-            {en: "child abuse", ko: "아동 학대"},
-            {en: "drug abuse", ko: "약물 남용"},
-            {en: "investigate", ko: "수사하다"},
-            {en: "warrant", ko: "영장"},
-            {en: "search warrant", ko: "수색 영장"},
-            {en: "arrest warrant", ko: "구속 영장"},
-            {en: "imprison, incarcerate", ko: "감금하다, 투옥하다"},
-            {en: "suspect", ko: "용의자"},
-            {en: "culprit", ko: "범인"},
-            {en: "apprehend, arrest", ko: "체포하다"},
-            {en: "domestic violence", ko: "가정 폭력"},
-            {en: "prevent heinous crimes", ko: "흉악범죄를 예방하다"},
-            {en: "victim", ko: "희생자, 피해자"},
-
-            // # 법
-            {en: "trial", ko: "재판"},
-            {en: "verdict", ko: "평결"},
-            {en: "life in prison", ko: "무기징역[종신형]"},
-            {en: "death penalty, capital punishment", ko: "사형"},
-            {en: "death sentence", ko: "사형 선고"},
-            {en: "abolish the death penalty", ko: "사형제를 폐지하다"},
-            {en: "justice", ko: "공정성, 정당성"},
-            {en: "judge", ko: "판사"},
-            {en: "prosecutor", ko: "검사"},
-            {en: "enforce a law", ko: "법을 시행하다"},
-            {en: "liability", ko: "법적 책임"},
-            {en: "lawyer", ko: "변호사"},
-            {en: "attorney", ko: "변호사, 법률대리인, (지역) 검사"},
-            {en: "charge", ko: "혐의, 기소"},
-            {en: "convict, find guilty of", ko: "유죄 판결하다"},
-            {en: "alleged", ko: "주장된"},
-            {en: "innocent", ko: "무죄의"},
-            {en: "confiscate", ko: "압수하다, 몰수하다"},
-            {en: "human rights", ko: "인권"},
-            {en: "repeal", ko: "(법률을) 폐지하다"},
-            {en: "testify", ko: "증언하다"},
-            {en: "witness", ko: "목격하다, 목격자"},
-            {en: "release", ko: "풀어주다, 석방하다"},
-            {en: "amnesty", ko: "사면"},
-            {en: "violate", ko: "위반하다"},
-            {en: "constitution", ko: "헌법"},
-            {en: "custody", ko: "(재판 전의) 유치, 구류"},
-            {en: "Constitutional Court", ko: "헌법재판소"},
-            {en: "democracy", ko: "민주주의"},
-            {en: "unconstitutional", ko: "위헌적인"},
-
-            // # 외교
-            {en: "policy", ko: "정책"},
-            {en: "political party", ko: "정당"},
-            {en: "the ruling party", ko: "여당"},
-            {en: "an opposition party", ko: "야당"},
-            {en: "monarchy", ko: "군주제"},
-            {en: "strategy", ko: "전략"},
-            {en: "dictatorship", ko: "독재"},
-            {en: "tactic", ko: "전술"},
-            {en: "dictator", ko: "독재자"},
-            {en: "conspiracy", ko: "음모"},
-            {en: "politics", ko: "정치"},
-            {en: "politician", ko: "정치인"},
-            {en: "manipulate", ko: "(교묘히) 조종하다, 조작하다"},
-            {en: "crisis", ko: "위기"},
-            {en: "conservative", ko: "보수적인"},
-            {en: "liberal", ko: "진보적인"},
-            {en: "moderate", ko: "온건한"},
-            {en: "radical", ko: "과격한"},
-            {en: "ardent", ko: "열렬한, 열정적인"},
-            {en: "advocate", ko: "지지하다, 지지자"},
-            {en: "diplomatic", ko: "외교적인"},
-            {en: "diplomacy", ko: "외교"},
-            {en: "proponents", ko: "찬성파, 지지자들"},
-            {en: "opponents", ko: "반대파, 반대자들"},
-            {en: "poll", ko: "여론조사"},
-            {en: "summit talks", ko: "정상 회담"},
-            {en: "accuse, condemn", ko: "비난하다"},
-            {en: "concession", ko: "양보"},
-            {en: "approval rating", ko: "지지율"},
-            {en: "mandate", ko: "(국민의) 명령"},
-            {en: "compromise", ko: "타협"},
-            {en: "order", ko: "(사령관의) 명령"},
-            {en: "peace treaty", ko: "평화조약"},
-
-            // # 정치, 선거
-            {en: "election", ko: "선거"},
-            {en: "refugee", ko: "난민, 망명자"},
-            {en: "confrontation", ko: "대치, 대립"},
-            {en: "run for", ko: "출마하다, 입후보하다"},
-            {en: "vote", ko: "투표하다"},
-            {en: "majority", ko: "(대)다수, 과반수"},
-            {en: "candidate", ko: "후보"},
-            {en: "minority", ko: "소수"},
-            {en: "government", ko: "정부"},
-            {en: "be elected", ko: "당선되다"},
-            {en: "administration", ko: "행정부"},
-            {en: "predecessor", ko: "전임자"},
-            {en: "legislature", ko: "입법부"},
-            {en: "successor", ko: "후임자"},
-            {en: "judiciary", ko: "사법부"},
-            {en: "National Assembly, Congress, Parliament", ko: "의회, 국회"},
-            {en: "impeachment", ko: "탄핵"},
-            {en: "corruption", ko: "부패"},
-            {en: "representative, legislator, lawmaker", ko: "국회의원"},
-            {en: "spokesperson", ko: "대변인"},
-            {en: "Supreme Court", ko: "대법원"},
-            {en: "minister", ko: "장관"},
-
-            // # 시위 및 쿠데타
-            {en: "demonstrate against", ko: "~에 반대하여 시위하다"},
-            {en: "soar, surge, skyrocket", ko: "급등하다"},
-            {en: "coup (d'état)", ko: "쿠데타"},
-            {en: "revolution", ko: "혁명"},
-            {en: "backfire", ko: "역효과를 낳다"},
-            {en: "standoff", ko: "대치(상태)"},
-            {en: "tense", ko: "일촉즉발의, 긴장된"},
-            {en: "aggravate", ko: "(좋지 못한 상황을) 악화시키다"},
-            {en: "topple", ko: "(권력의 자리에서) 끌어내리다"},
-            {en: "execute", ko: "처형하다"},
-            {en: "oust", ko: "추방하다, 축출하다"},
-            {en: "plunge, plummet", ko: "급락하다"},
-
-            // # 경제
-            {en: "currency", ko: "통화, 화폐"},
-            {en: "pension", ko: "연금"},
-            {en: "shareholder", ko: "주주"},
-            {en: "exchange rate", ko: "환율"},
-            {en: "fluctuate", ko: "변동을 거듭하다"},
-            {en: "income", ko: "수입, 소득"},
-            {en: "expenditure", ko: "지출"},
-            {en: "asset", ko: "자산"},
-            {en: "capital", ko: "자본"},
-            {en: "debt", ko: "부채"},
-            {en: "take out a loan", ko: "대출받다"},
-            {en: "mortgage loan", ko: "주택 담보 대출"},
-            {en: "recession, stagnation", ko: "불경기"},
-            {en: "bankruptcy", ko: "파산"},
-            {en: "auction", ko: "경매"},
-            {en: "stipulation", ko: "조항, 조건"},
-            {en: "seed money", ko: "종자돈"},
-            {en: "invest", ko: "투자하다"},
-            {en: "investment", ko: "투자"},
-            {en: "stock", ko: "주식"},
-            {en: "bond", ko: "채권"},
-            {en: "export", ko: "수출"},
-            {en: "import", ko: "수입"},
-            {en: "surplus", ko: "흑자, 잉여"},
-            {en: "deficit", ko: "적자, 부족"}
-        ];
-
-        let selectedEnCard = null;
-        let selectedKoCard = null;
-        let wrongWords = []; // [추가] 틀린 단어를 저장할 배열
-
-        function startNewSet() {
-            const enCol = document.getElementById('en-col');
-            const koCol = document.getElementById('ko-col');
-            const status = document.getElementById('status-text');
-
-            enCol.innerHTML = '';
-            koCol.innerHTML = '';
-            selectedEnCard = null;
-            selectedKoCard = null;
-        
-            // [수정] 문제 추출 로직
-            let currentBatch = [];
-
-            // 1. 틀린 단어가 있다면 우선적으로 가져옴 (최대 7개)
-            if (wrongWords.length > 0) {
-                currentBatch = [...wrongWords].slice(0, 5);
-                // 이미 가져온 단어는 오답 노트에서 일단 제거 (맞추면 영구 제거, 또 틀리면 다시 추가됨)
-                wrongWords = wrongWords.slice(currentBatch.length);
-            }
-        
-            // 2. 7개가 안 되면 나머지 부족한 만큼 전체 리스트에서 랜덤하게 채움
-            const needed = 5 - currentBatch.length;
-            if (needed > 0) {
-                const remainingPool = fullWordList.filter(word => !currentBatch.includes(word));
-                const extraWords = remainingPool.sort(() => 0.5 - Math.random()).slice(0, needed);
-                currentBatch = [...currentBatch, ...extraWords];
-            }
-        
-            status.innerText = `남은 오답: ${wrongWords.length}개 | 현재 5개 진행 중`;
-        
-            // 이하 카드 생성 로직은 동일
-            const shuffledEn = [...currentBatch].sort(() => 0.5 - Math.random());
-            const shuffledKo = [...currentBatch].sort(() => 0.5 - Math.random());
-        
-            shuffledEn.forEach(item => {
-                const card = createCard(item.en, item.en, 'en', item); // 원본 객체 전달
-                enCol.appendChild(card);
-            });
-        
-            shuffledKo.forEach(item => {
-                const card = createCard(item.ko, item.en, 'ko', item);
-                koCol.appendChild(card);
-            });
-        }
-
-        // [수정] createCard 함수에 item 인자 추가
-        function createCard(text, matchValue, type, originalItem) {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerText = text;
-            card.dataset.value = matchValue;
-            card.dataset.type = type;
-            card.originalItem = originalItem; // [추가] 오답 저장을 위해 원본 객체 보관
-        
-            card.onclick = function() {
-                if (card.classList.contains('correct')) return;
-                const siblingCards = card.parentElement.querySelectorAll('.card');
-                siblingCards.forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                if (type === 'en') selectedEnCard = card;
-                else selectedKoCard = card;
-                checkMatch();
-            };
-            return card;
-        }
-
-        function checkMatch() {
-            if (selectedEnCard && selectedKoCard) {
-                if (selectedEnCard.dataset.value === selectedKoCard.dataset.value) {
-                    selectedEnCard.classList.replace('selected', 'correct');
-                    selectedKoCard.classList.replace('selected', 'correct');
-                    selectedEnCard = null;
-                    selectedKoCard = null;
-                } else {
-                    // [수정] 오답 발생 시 틀린 단어 리스트에 추가
-                    const failedWord = selectedEnCard.originalItem;
-                    if (!wrongWords.some(w => w.en === failedWord.en)) {
-                        wrongWords.push(failedWord);
-                    }
-                
-                    const cardA = selectedEnCard;
-                    const cardB = selectedKoCard;
-                    cardA.classList.add('shake');
-                    cardB.classList.add('shake');
-
-                    setTimeout(() => {
-                        cardA.classList.remove('selected', 'shake');
-                        cardB.classList.remove('selected', 'shake');
-                    }, 400);
-
-                    selectedEnCard = null;
-                    selectedKoCard = null;
-
-                    // 상태 텍스트 업데이트
-                    document.getElementById('status-text').innerText = `남은 오답: ${wrongWords.length}개 | 현재 진행 중`;
-                }
-            }
-        }
-
-        // 앱 시작
-        window.onload = startNewSet;
-    </script>
+<a class="skip-link" href="#main">본문으로 건너뛰기</a>
+<noscript><p class="status-banner">이 게임은 JavaScript가 필요합니다. HTML 파일을 내려받아 JavaScript를 허용한 브라우저에서 열어 주세요.</p></noscript>
+<header class="topbar"><div class="topbar-inner">
+<button class="logo" id="logoHome" aria-label="게임 홈으로"><span class="logo-mark" aria-hidden="true">NQ</span><span><span class="logo-name">NET QUEST</span><br><span class="logo-sub">COMPUTER NETWORKING · MIDTERM</span></span></button>
+<div class="topbar-end"><span class="offline">OFFLINE READY</span><button class="ghost" id="soundBtn" aria-pressed="false">소리 꺼짐</button><button class="ghost" id="guideBtn">이용 안내</button></div>
+</div></header>
+<div class="status-banner" id="storageWarning" hidden>이 브라우저에서는 기록을 저장할 수 없습니다. 게임은 계속할 수 있지만 창을 닫으면 기록이 사라질 수 있습니다. 기록 내보내기로 백업해 주세요.</div>
+<main id="main" class="app">
+<section id="homeView" aria-labelledby="homeTitle">
+<div class="hero">
+<div><div class="eyebrow">YOUR MIDTERM, ONE QUESTION AT A TIME</div><h1 id="homeTitle">중간고사,<br>한 문제씩 정복.</h1><p>개념을 고르고, 해설로 확인하고, 오답을 다시 풀어보세요.<br>앞서 정리한 예상문제 90개를 5지선다로 재구성했습니다.</p><div class="hero-tags"><span>6개 학습 챕터</span><span>핵심 60 + 추가 30</span><span>외부 연결 없이 실행</span></div></div>
+<div class="network-map" aria-hidden="true"><svg viewBox="0 0 310 180"><g fill="none" stroke="#7397b0" stroke-width="1" opacity=".55"><path d="M42 39L151 19 266 40 266 133 151 158 42 132Z"/><path d="M42 39L151 158 266 40M42 132L151 19 266 133M42 39L266 133M42 132L266 40"/></g><circle cx="153" cy="89" r="30" fill="#274359" stroke="#56837f"/><text x="153" y="86" text-anchor="middle" fill="#a8e9d7" font-size="22" font-weight="800">90</text><text x="153" y="104" text-anchor="middle" fill="#ccdeeb" font-size="8" letter-spacing="1">QUESTIONS</text><g fill="#17334a" stroke="#76b7a8"><circle cx="42" cy="39" r="17"/><circle cx="151" cy="19" r="17"/><circle cx="266" cy="40" r="17"/><circle cx="266" cy="133" r="17"/><circle cx="151" cy="158" r="17"/><circle cx="42" cy="132" r="17"/></g><g class="map-num" text-anchor="middle"><text x="42" y="44">01</text><text x="151" y="24">02</text><text x="266" y="45">03</text><text x="266" y="138">04</text><text x="151" y="163">05</text><text x="42" y="137">06</text></g><g class="map-label" text-anchor="middle"><text x="42" y="70">개요</text><text x="151" y="52">구성</text><text x="266" y="71">통신</text><text x="266" y="164">모델</text><text x="42" y="164">부호화</text><text x="151" y="133">신호</text></g></svg></div>
+</div>
+<div class="dashboard">
+<aside class="panel progress-panel" aria-label="누적 학습 기록">
+<div class="profile-row"><div class="profile-icon" aria-hidden="true">⌘</div><div><div id="levelName" class="level-name">새로운 네트워커</div><div id="levelNumber" class="level-number">LEVEL 1</div></div></div>
+<div class="xp-row"><span>누적 경험치</span><strong id="totalXP">0 XP</strong></div><div class="track"><i id="xpBar"></i></div><div class="small muted" id="nextLevel" style="margin-top:5px;font-size:10px">다음 레벨까지 150 XP</div>
+<div class="stats-mini"><div><strong id="uniqueCount">0</strong><span>풀어본 문제</span></div><div><strong id="overallAccuracy">—</strong><span>누적 정답률</span></div><div><strong id="wrongCount">0</strong><span>남은 오답</span></div></div>
+<div class="side-heading"><strong>챕터별 학습 현황</strong><span class="small muted" style="font-size:10px">최근 정답 / 15</span></div><div class="side-chapters" id="masteryRows"></div>
+<div class="side-actions"><button class="secondary" id="wrongNotebookBtn">오답노트 보기</button><button class="secondary" id="bookmarkStudyBtn">북마크 학습 · 0</button></div>
+<div id="historyArea" class="history-box"></div>
+<p class="storage-info">기록은 이 브라우저에만 저장됩니다.<br>파일 위치·브라우저를 바꾸기 전 백업하세요.</p>
+<div class="data-tools"><button class="ghost" id="exportBtn">기록 내보내기</button><button class="ghost" id="importBtn">가져오기</button><button class="ghost reset-link" id="resetBtn">초기화</button></div><input id="importFile" type="file" accept="application/json,.json" hidden>
+</aside>
+<div class="panel setup-panel">
+<div class="section-header"><h2>오늘의 라운드 설정</h2><span class="badge">5지선다 · 정답 1개</span></div>
+<div class="mode-grid" role="group" aria-label="게임 모드"><button class="mode-btn active" data-mode="learn" aria-pressed="true"><div class="mode-symbol" aria-hidden="true">▤</div><b>학습 모드</b><span>즉시 채점 + 키워드 해설</span></button><button class="mode-btn" data-mode="exam" aria-pressed="false"><div class="mode-symbol" aria-hidden="true">◷</div><b>실전 모드</b><span>전 챕터 출제 + 일괄 채점</span></button><button class="mode-btn" data-mode="review" aria-pressed="false"><div class="mode-symbol" aria-hidden="true">↻</div><b>오답 재도전</b><span>아직 해결하지 못한 문제</span></button></div>
+<p class="mode-desc" id="modeDesc"></p>
+<div class="filter-header"><h3>학습할 챕터</h3><button class="ghost" id="allChaptersBtn" style="font-size:11px;padding:4px 8px">전체 선택 / 해제</button></div>
+<div id="chapterSelect" class="chapter-grid"></div><p class="range-note">5번 「신호」 PDF의 뒷부분을 6장 부호화로 나누었습니다.</p>
+<div class="select-grid"><div class="field"><label for="tierSelect">문제 범위</label><select id="tierSelect"><option value="all">핵심 + 추가 (90)</option><option value="core">핵심 예상 (60)</option><option value="extra">추가 예상 (30)</option></select></div><div class="field"><label for="countSelect">이번 라운드</label><select id="countSelect"><option value="6">6문항</option><option value="12" selected>12문항</option><option value="15">15문항</option><option value="30">30문항</option><option value="60">60문항</option><option value="all">선택 범위 전체</option></select></div><div class="field timer-field"><label for="timerSelect">실전 제한시간</label><select id="timerSelect" disabled><option value="0">제한 없음</option><option value="10">10분</option><option value="20">20분</option><option value="30" selected>30분</option><option value="45">45분</option><option value="60">60분</option></select></div></div>
+<div id="poolSummary" class="pool-summary" aria-live="polite"></div><div class="start-row"><button id="startBtn" class="primary">라운드 시작 <span aria-hidden="true">→</span></button></div>
+<div id="resumeCard" class="save-card" hidden><div class="copy"><b>진행 중인 라운드가 있습니다.</b><small id="resumeInfo"></small></div><button class="secondary" id="resumeBtn">이어하기</button></div>
+<p class="footer-note"><strong>균형 있게 출제합니다.</strong> 선택한 챕터에서 가능한 한 같은 수의 문제를 뽑습니다. 실전 모드는 6개 학습 챕터에서 최소 1문항씩 출제합니다.<br>예상문제를 객관식으로 바꾼 학습 게임이며, 실제 시험문제·공식 정답·출제 확률을 보장하지 않습니다.</p>
+</div></div>
+</section>
+<section id="playView" hidden aria-labelledby="playTitle">
+<div class="play-heading"><div><div class="back-label" id="playSubtitle">LEARNING ROUND</div><h1 id="playTitle">학습 모드</h1></div><div class="play-actions"><button class="ghost" id="saveExitBtn">저장하고 나가기</button><button class="ghost" id="examSubmitBtn" hidden>답안 제출</button></div></div>
+<div class="play-stats"><div class="stat-card"><small id="roundCountLabel">문제 진행</small><strong id="roundCountValue">1 <small>/ 12</small></strong></div><div class="stat-card"><small id="roundScoreLabel">이번 라운드 XP</small><strong id="roundScoreValue">0</strong></div><div class="stat-card"><small id="roundStreakLabel">연속 정답</small><strong id="roundStreakValue">0</strong></div><div class="stat-card" id="timerCard"><small id="clockLabel">진행 시간</small><strong id="clockValue">00:00</strong></div></div>
+<div class="play-layout"><article class="panel question-panel"><div class="q-top"><div class="q-badges" id="qBadges"></div><button class="ghost bookmark" id="bookmarkBtn" aria-pressed="false">☆ 다시 보기</button></div><h2 class="q-stem" id="qStem" tabindex="-1"></h2><div class="q-figure" id="qFigure" hidden></div><div id="options" class="options" role="group" aria-label="다섯 보기 중 하나 선택"></div><p id="examSaved" class="exam-saved" hidden></p><div id="feedback" hidden></div><div class="game-bottom"><button class="secondary" id="prevBtn">이전</button><button class="ghost" id="skipBtn">모르겠어요</button><button class="primary" id="mainActionBtn" disabled>정답 확인</button></div><p class="key-hint"><kbd>1</kbd> ~ <kbd>5</kbd> 보기 선택 &nbsp; <kbd>Enter</kbd> 정답 확인 / 다음 문제 &nbsp; 오답은 자동 저장됩니다.</p></article>
+<aside class="panel nav-panel"><h2>라운드 지도</h2><p id="navSummary" class="nav-summary"></p><div id="navGrid" class="nav-grid"></div><div class="nav-legend" id="navLegend"></div><p class="nav-tip" id="navTip"></p><div class="scratch"><label for="scratchpad">계산 메모</label><textarea id="scratchpad" placeholder="CRC, 단위 변환 등을 메모하세요."></textarea><small>채점에 사용되지 않으며 라운드와 함께 저장됩니다.</small></div></aside></div>
+</section>
+<section id="resultView" hidden aria-labelledby="resultTitle">
+<div class="results-heading"><div><div class="eyebrow muted">ROUND COMPLETE</div><h1 id="resultTitle">이번 라운드의 결과</h1></div><button class="ghost" id="resultHomeBtn">홈으로</button></div><div class="confetti-line"></div><div class="panel result-top"><div class="score-dial" id="scoreDial"><div class="score-label"><strong id="resultScore">0</strong><span>점 / 100</span></div></div><div class="result-copy"><div class="eyebrow" id="resultEyebrow">ROUND REPORT</div><h2 id="resultMessage">학습을 완료했습니다.</h2><p id="resultDescription"></p><div class="result-chips" id="resultChips"></div></div></div>
+<div class="result-actions"><button class="primary" id="retryWrongBtn">이번 오답 다시 풀기</button><button class="secondary" id="retryAllBtn">같은 문제 다시 풀기</button><button class="secondary" id="downloadResultBtn">결과 내보내기</button></div>
+<div class="panel breakdown"><h2>챕터별 결과</h2><p class="subtext">풀어본 문항 기준입니다. 챕터 전체의 숙련도를 의미하지 않습니다.</p><div style="overflow-x:auto"><table class="breakdown-table"><thead><tr><th scope="col">학습 챕터</th><th scope="col">출제</th><th scope="col">정답</th><th scope="col">정답률</th></tr></thead><tbody id="breakdownBody"></tbody></table></div></div>
+<div class="panel review-panel"><div class="section-header"><h2>정답과 해설 다시 보기</h2><span class="small muted" id="reviewCount"></span></div><div class="review-controls"><select id="reviewFilter" aria-label="해설 목록 필터"><option value="wrong">오답·미응답만</option><option value="all">전체 문항</option><option value="correct">정답 문항</option><option value="star">북마크 문항</option></select><input id="reviewSearch" type="search" placeholder="문항 번호 또는 키워드 검색" aria-label="해설 검색"></div><div id="resultReviews"></div></div>
+</section>
+<footer class="app-footer">NET QUEST · 출처는 문항별 해설에 표시됩니다. 기록은 외부로 전송하지 않습니다.</footer>
+</main>
+<div id="announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div><div id="toast" class="toast" role="status" hidden></div>
+<dialog id="modal" aria-labelledby="modalTitle"><div class="modal-head"><h2 id="modalTitle"></h2><button class="ghost" id="modalClose" aria-label="창 닫기">닫기</button></div><div class="modal-body" id="modalBody"></div><div class="modal-foot" id="modalFoot"></div></dialog>
+<script type="application/json" id="question-bank">[
+  {
+    "id": "1-01",
+    "chapter": 1,
+    "tier": "core",
+    "title": "패킷과 재조립",
+    "stem": "패킷의 구성과 전송 과정에 대한 설명으로 옳은 것은?",
+    "options": [
+      "헤더는 송수신지·일련번호 등을, 페이로드는 실제 데이터를 담으며 수신 측에서 재조립한다.",
+      "헤더가 실제 데이터를 담고, 페이로드가 송수신지 주소만 담는다.",
+      "큰 데이터는 분할하지 않고 반드시 하나의 패킷으로 전송한다.",
+      "패킷은 반드시 보낸 순서대로 도착하므로 재조립 과정이 필요 없다.",
+      "패킷은 수신지에 도착하면 일련번호를 무시하고 도착 순서대로만 결합한다."
+    ],
+    "correct": 0,
+    "explain": "**패킷**은 작은 데이터 전송 단위이다. **헤더**는 송수신지·일련번호 등을, **페이로드**는 실제 데이터를 담는다. 수신 측은 번호에 맞춰 **재조립**한다.",
+    "trap": "패킷이 보낸 순서와 다르게 도착할 수 있다는 교안의 상황을 기억한다.",
+    "kind": "개념",
+    "predictionPage": 3,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.30–33; E1 1장 문항 2·4"
+  },
+  {
+    "id": "1-02",
+    "chapter": 1,
+    "tier": "core",
+    "title": "데이터통신의 필수 요소",
+    "stem": "교안에서 제시한 데이터통신의 다섯 가지 필수 요소가 모두 들어 있는 것은?",
+    "options": [
+      "메시지 · 전송장치 · 수신장치 · 전송매체 · 프로토콜",
+      "메시지 · 전송장치 · 수신장치 · 전송매체 · 패리티 비트",
+      "메시지 · 전송장치 · 수신장치 · MAC 주소 · 프레임 번호",
+      "메시지 · 전송장치 · 라우팅 테이블 · 전송매체 · 주파수",
+      "라우터 · 허브 · 스위치 · 브리지 · 중계기"
+    ],
+    "correct": 0,
+    "explain": "필수 요소는 **메시지·전송장치·수신장치·전송매체·프로토콜**이다. 데이터통신은 둘 이상의 장치가 매체와 규칙을 이용해 **정보를 교환**하는 과정이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 3,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.4–6"
+  },
+  {
+    "id": "1-03",
+    "chapter": 1,
+    "tier": "core",
+    "title": "네트워크의 장점",
+    "stem": "여러 컴퓨터를 네트워크로 연결했을 때의 장점으로 교안이 제시하지 않은 것은?",
+    "options": [
+      "데이터의 독점과 공유 차단",
+      "데이터 공유",
+      "주변장치 공유",
+      "능률적인 통신",
+      "손쉬운 백업"
+    ],
+    "correct": 0,
+    "explain": "교안의 네 가지 장점은 **데이터 공유·주변장치 공유·능률적인 통신·손쉬운 백업**이다. **데이터 독점**은 이 목록에 속하지 않는다.",
+    "trap": "“제시하지 않은 것”을 고르는 부정형 문항이다.",
+    "kind": "개념",
+    "predictionPage": 3,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.27–29; E1 1장 문항 1"
+  },
+  {
+    "id": "1-04",
+    "chapter": 1,
+    "tier": "core",
+    "title": "네트워크 명령어",
+    "stem": "명령어와 기능을 올바르게 연결한 것은?",
+    "options": [
+      "ipconfig /all: MAC 주소 등을 포함한 상세 설정 확인",
+      "ipconfig /release: DHCP 할당 갱신",
+      "ipconfig /renew: 현재 할당된 IP 주소 해제",
+      "ping: 사용자 계정 목록 표시",
+      "ipconfig: 컴퓨터 이름만 확인"
+    ],
+    "correct": 0,
+    "explain": "**ipconfig**는 IP 설정, **/all**은 MAC을 포함한 상세 정보, **ping**은 연결 진단이다. **/release**는 IP 해제, **/renew**는 DHCP 할당 갱신이다.",
+    "trap": "해제(release)와 갱신(renew)을 바꾸지 않는다.",
+    "kind": "개념",
+    "predictionPage": 3,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.80–85; E1 1장 문항 8·9"
+  },
+  {
+    "id": "1-05",
+    "chapter": 1,
+    "tier": "core",
+    "title": "비트·바이트·문자 코드",
+    "stem": "비트·바이트·문자 코드에 대한 설명 중 옳은 것은?",
+    "options": [
+      "1바이트는 8비트이며, 교안의 ASCII 예에서 A는 65에 대응한다.",
+      "1비트는 8바이트이며, A는 65바이트로만 표현한다.",
+      "비트는 0부터 9까지를 한 번에 나타내는 최소 단위이다.",
+      "문자 코드는 송신지 MAC 주소와 라우터 포트를 대응시킨다.",
+      "1바이트는 16비트이며, ASCII는 패킷 오류 검출 규칙이다."
+    ],
+    "correct": 0,
+    "explain": "**비트**는 0 또는 1을 나타내는 최소 단위, **1바이트=8비트**이다. **문자 코드**는 문자와 숫자의 대응 규칙이며 교안 예시는 **A=65**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 3,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.34; E1 1장 문항 5"
+  },
+  {
+    "id": "1-06",
+    "chapter": 1,
+    "tier": "core",
+    "title": "공식 표준과 사실상 표준",
+    "stem": "De jure와 De facto 표준의 구분으로 옳은 것은?",
+    "options": [
+      "De jure는 공인 기관이 제정한 표준, De facto는 널리 사용되어 형성된 사실상 표준이다.",
+      "De jure는 널리 사용되어 형성된 표준이고, De facto는 공인 기관이 제정한 표준이다.",
+      "De jure는 비공식 표준이고, De facto는 공식 승인을 받은 표준에만 해당한다.",
+      "두 표준의 구분은 기관의 제정 여부가 아니라 유선·무선 전송매체에 따른다.",
+      "표준화의 목적은 호환성을 없애고 각 시스템이 독립된 규칙만 사용하도록 하는 것이다."
+    ],
+    "correct": 0,
+    "explain": "**De jure**는 공인 기관이 제정한 표준, **De facto**는 널리 쓰이는 **사실상의 표준**이다. 표준화의 목적은 **호환성·상호연동성** 확보이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 4,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.11"
+  },
+  {
+    "id": "1-07",
+    "chapter": 1,
+    "tier": "core",
+    "title": "통신망 적용 범위",
+    "stem": "통신망의 이름과 적용 범위를 잘못 연결한 것은?",
+    "options": [
+      "PAN — 도시 간·국가 간 광역 통신망",
+      "LAN — 건물·대학 등 제한된 지역",
+      "MAN — 도시권",
+      "WAN — 도시 간·국가 간 넓은 지역",
+      "BAN — 몸이나 옷에 부착한 장치의 통신망"
+    ],
+    "correct": 0,
+    "explain": "**PAN**은 교안에서 약 **10m 이내의 개인 활동 공간**을 연결하는 망이다. 도시 간·국가 간 광역 연결은 **WAN**, 인체 주변 장치의 망은 **BAN**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 4,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.7–10"
+  },
+  {
+    "id": "1-08",
+    "chapter": 1,
+    "tier": "core",
+    "title": "IoT와 IPv6",
+    "stem": "사물인터넷과 IPv6의 관련성을 교안에 맞게 설명한 것은?",
+    "options": [
+      "사물에 센서·통신 기능을 넣어 연결하며, IPv6의 충분한 주소 공간이 다수 장치의 통신을 지원한다.",
+      "IoT는 센서 정보를 공유하지 않고 각 사물을 독립적으로 동작시키는 기술이다.",
+      "IPv6의 주소 공간이 줄어들수록 더 많은 사물이 고유한 주소를 사용할 수 있다.",
+      "IoT의 핵심은 연결된 사물끼리 정보를 주고받지 않고 서버에서만 보관하는 것이다.",
+      "교안은 IPv6의 주소 공간이 사물인터넷의 다수 장치 연결과 무관하다고 설명한다."
+    ],
+    "correct": 0,
+    "explain": "**IoT**는 사물에 **센서·통신 기능**을 넣어 연결하는 기술이다. **가전 원격 제어**가 활용 예이며, 교안은 **IPv6의 충분한 주소 공간**을 다수 장치 통신과 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 4,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.22–23; A1 문항 2"
+  },
+  {
+    "id": "1-09",
+    "chapter": 1,
+    "tier": "core",
+    "title": "와이어샤크의 세 영역",
+    "stem": "와이어샤크 화면의 영역과 역할을 올바르게 연결한 것은?",
+    "options": [
+      "패킷 리스트: 목록 / 패킷 상세: 계층별 의미·필드 / 패킷 데이터: 실제 데이터 내용",
+      "패킷 리스트: 계층별 필드 / 패킷 상세: 실제 바이트 / 패킷 데이터: 패킷 목록",
+      "패킷 리스트: 실제 바이트 / 패킷 상세: 패킷 목록 / 패킷 데이터: 계층별 필드",
+      "패킷 리스트: 패킷 목록 / 패킷 상세: 실제 바이트 / 패킷 데이터: 계층별 필드",
+      "패킷 리스트: 계층별 필드 / 패킷 상세: 패킷 목록 / 패킷 데이터: 실제 바이트"
+    ],
+    "correct": 0,
+    "explain": "**리스트=패킷 목록**, **상세=계층별 의미와 필드**, **데이터=실제 내용**이다. 와이어샤크는 패킷을 **캡처·분석**하는 도구이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 4,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.35–36, 57–60; E1 1장 문항 7"
+  },
+  {
+    "id": "1-10",
+    "chapter": 1,
+    "tier": "core",
+    "title": "네트워크 설정 순서",
+    "stem": "교안의 네트워크 설정·사용 절차로 가장 적절한 순서는?",
+    "options": [
+      "하드웨어·NIC 확인 → 유선/무선 연결 → 설정 확인 → 네트워크 테스트",
+      "유선/무선 연결 → 네트워크 테스트 → 하드웨어·NIC 확인 → 설정 확인",
+      "설정 확인 → 유선/무선 연결 → 하드웨어·NIC 확인 → 네트워크 테스트",
+      "네트워크 테스트 → 하드웨어·NIC 확인 → 설정 확인 → 유선/무선 연결",
+      "하드웨어·NIC 확인 → 설정 확인 → 테스트 완료 → 마지막으로 연결"
+    ],
+    "correct": 0,
+    "explain": "**하드웨어·NIC 확인 → 연결 → 설정 확인 → 테스트** 순이다. 마지막에 컴퓨터와 주변장치가 제대로 연결되었는지 확인한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 4,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.63; E1 1장 문항 3"
+  },
+  {
+    "id": "1-11",
+    "chapter": 1,
+    "tier": "extra",
+    "title": "분석 도구 비교",
+    "stem": "소프트웨어 네트워크 분석 도구에 대한 교안의 설명으로 옳은 것은?",
+    "options": [
+      "컴퓨터나 서버에 설치하고 NIC를 통해 네트워크 데이터를 분석한다.",
+      "별도 휴대형 장비를 네트워크에 직접 연결해야만 사용하는 분석 도구이다.",
+      "컴퓨터에 설치하지만 NIC가 아닌 하드디스크를 통신 인터페이스로 사용한다.",
+      "운영체제의 설정 화면만 확인할 수 있으며 패킷을 캡처하지 못한다.",
+      "수신한 패킷의 데이터가 아니라 물리적 케이블 길이만 측정하는 도구이다."
+    ],
+    "correct": 0,
+    "explain": "**소프트웨어 분석 도구**는 PC·서버에 설치해 **NIC**로 접속한다. **하드웨어 분석 도구**는 직접 연결하는 휴대형 장비로 패킷·상태를 확인한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 5,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.35"
+  },
+  {
+    "id": "1-12",
+    "chapter": 1,
+    "tier": "extra",
+    "title": "표준화 기구",
+    "stem": "교안에 제시된 표준화 기구와 역할의 연결로 옳은 것은?",
+    "options": [
+      "ITU-T — 전기통신 표준화",
+      "ANSI — 전기통신 V·X 시리즈 국제 표준화",
+      "NIST — 인터넷의 장기 연구만 담당하는 기관",
+      "ISO — 미국의 산업 표준만 제정하는 기관",
+      "ITU-T — 미국의 ASCII 문자 코드 제정을 대표 역할로 하는 기관"
+    ],
+    "correct": 0,
+    "explain": "**ITU-T=전기통신 표준화**, **ISO=국제표준 개발·보급**, **ANSI=미국 산업 표준**, **NIST=측정·정보처리·보안 표준**으로 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 5,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.12, 14–15"
+  },
+  {
+    "id": "1-13",
+    "chapter": 1,
+    "tier": "extra",
+    "title": "IETF·IRTF·RFC",
+    "stem": "인터넷 표준화 활동에 대한 교안의 설명으로 옳은 것은?",
+    "options": [
+      "IETF는 표준화, IRTF는 장기 연구를 담당하며 모든 RFC가 인터넷 표준인 것은 아니다.",
+      "IETF는 장기 연구, IRTF는 인터넷 기술의 표준화를 담당한다.",
+      "IETF는 표준화를 담당하며, RFC 번호를 받으면 모두 인터넷 표준이 된다.",
+      "IRTF는 연구를 담당하지만, RFC에는 정보·실험 목적의 문서가 없다.",
+      "RFC 문서는 표준 트랙에 속하지 않으면 교안에서 전혀 다루지 않는다."
+    ],
+    "correct": 0,
+    "explain": "**IETF=표준화**, **IRTF=장기 연구**이다. **모든 RFC가 표준은 아니며**, 교안에는 표준 트랙·정보·실험·역사 관련 문서가 제시된다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 5,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.17–19"
+  },
+  {
+    "id": "1-14",
+    "chapter": 1,
+    "tier": "extra",
+    "title": "인터넷 발전 순서",
+    "stem": "교안에서 제시한 인터넷 발전 사건의 시간 순서가 옳은 것은?",
+    "options": [
+      "1969 ARPANET → 1983 TCP/IP 공식 채택 → 1986 NSFNET",
+      "1969 NSFNET → 1983 ARPANET → 1986 TCP/IP 공식 채택",
+      "1969 TCP/IP 공식 채택 → 1983 NSFNET → 1986 ARPANET",
+      "1983 ARPANET → 1986 TCP/IP 공식 채택 → 1969 NSFNET",
+      "1986 NSFNET → 1983 TCP/IP 공식 채택 → 1969 ARPANET"
+    ],
+    "correct": 0,
+    "explain": "교안의 순서는 **ARPANET(1969) → TCP/IP 공식 채택(1983) → NSFNET(1986)**이다. NSFNET은 슈퍼컴퓨터센터를 연결한 **기간망**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 5,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L1 p.20"
+  },
+  {
+    "id": "1-15",
+    "chapter": 1,
+    "tier": "extra",
+    "title": "HTTP 캡처 실습",
+    "stem": "교안의 HTTP 캡처 실습 설명으로 옳은 것은?",
+    "options": [
+      "표시 필터는 http, 기본 저장 확장자는 .pcapng이며 캐시 때문에 캡처가 부족할 수 있다.",
+      "표시 필터는 smtp, 기본 저장 확장자는 .docx이다.",
+      "캡처 파일의 기본 확장자는 .xlsx이며 패킷을 표로만 저장한다.",
+      "브라우저 캐시는 항상 서버와 새로 통신하도록 강제한다.",
+      "슈퍼 리로드는 서버 통신을 차단하고 캐시만 읽는 방법이다."
+    ],
+    "correct": 0,
+    "explain": "교안 실습의 필터는 **http**, 저장 확장자는 **.pcapng**이다. **캐시**로 통신이 줄면 **슈퍼 리로드**로 서버에서 다시 읽도록 한다.",
+    "trap": "이 문항은 제공된 교안의 HTTP 실습을 묻는다.",
+    "kind": "개념",
+    "predictionPage": 5,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L1 p.56–57, 61; E1 1장 객관식 5"
+  },
+  {
+    "id": "2-01",
+    "chapter": 2,
+    "tier": "core",
+    "title": "접속 형태와 장애",
+    "stem": "네트워크 접속 형태의 구조·장애 영향을 올바르게 설명한 것은?",
+    "options": [
+      "성형은 중앙 장치에 노드를 연결하며, 중앙 장치 장애는 전체에 영향을 줄 수 있다.",
+      "버스형은 모든 노드 쌍을 각각 전용선으로 연결한다.",
+      "단순 링형은 링이 단절되어도 반드시 모든 통신이 그대로 유지된다.",
+      "트리형은 계층 구조가 없으며 상위 장치에 병목이 생길 수 없다.",
+      "그물형은 우회 경로가 없는 대신 회선 수가 가장 적다."
+    ],
+    "correct": 0,
+    "explain": "**성형**은 중앙 연결, **버스형**은 공유 케이블, **트리형**은 계층 연결, **링형**은 인접 두 노드 연결, **그물형**은 전용 점대점 연결이다. 성형은 **중앙 장애**, 그물형은 **회선 비용**에 유의한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 6,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.38–47; A1 문항 1; E1 2장 문항 6"
+  },
+  {
+    "id": "2-02",
+    "chapter": 2,
+    "tier": "core",
+    "title": "더미 허브와 스위칭 허브",
+    "stem": "더미 허브와 스위칭 허브를 비교한 설명으로 옳은 것은?",
+    "options": [
+      "더미 허브는 대역폭을 공유하고, 스위칭 허브는 수신지 주소로 경로를 선택한다.",
+      "더미 허브는 수신지 주소로 점대점 연결하고, 스위칭 허브는 항상 전체 대역폭을 분할한다.",
+      "더미 허브는 수신지에만 보내고, 스위칭 허브는 수신지를 구분하지 않고 단순 중계한다.",
+      "스위칭 허브는 공유 대역폭을 노드 수대로 나누는 것이 유일한 기능이다.",
+      "두 장치 모두 수신지 주소를 구분하지 않고 똑같은 방식으로 중계한다."
+    ],
+    "correct": 0,
+    "explain": "**더미 허브=대역폭 공유·단순 중계**, **스위칭 허브=수신지 주소 선택·점대점 연결**이다. 교안은 후자를 대역폭 분할 문제의 해결책으로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 6,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.19–23; E1 2장 문항 3"
+  },
+  {
+    "id": "2-03",
+    "chapter": 2,
+    "tier": "core",
+    "title": "브리지와 라우터",
+    "stem": "브리지와 라우터의 역할로 옳은 것은?",
+    "options": [
+      "브리지는 LAN들을 연결해 트래픽을 통과시키고, 라우터는 IP 주소를 바탕으로 경로를 선택한다.",
+      "브리지는 IP 주소로 경로를 선택하고, 라우터는 물리적 신호 증폭만 수행한다.",
+      "브리지는 전송매체의 감쇠만 보상하고, 라우터는 수신지 주소를 사용하지 않는다.",
+      "브리지는 패킷을 아날로그로 변조하고, 라우터는 이를 디지털로 복조하는 장치이다.",
+      "라우터는 한 네트워크 내부에서만 동작하며 서로 다른 네트워크를 연결하지 못한다."
+    ],
+    "correct": 0,
+    "explain": "**브리지**는 LAN 연결과 수신지에 따른 트래픽 통과, **라우터**는 다른 네트워크 연결과 **IP 기반 라우팅**을 수행한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 6,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.28–29, 33; A1 문항 3; E1 2장 문항 4"
+  },
+  {
+    "id": "2-04",
+    "chapter": 2,
+    "tier": "core",
+    "title": "NIC와 MAC 주소",
+    "stem": "교안의 제조사 할당 MAC 주소 설명으로 옳은 것은?",
+    "options": [
+      "48비트(6바이트)이며 앞 24비트는 제조사 코드, 뒤 24비트는 제품 식별 번호이다.",
+      "32비트(4바이트)이며 앞 16비트와 뒤 16비트로 제조사·제품을 구분한다.",
+      "48비트(6바이트)이며 앞 24비트는 제품 식별 번호, 뒤 24비트는 제조사 코드이다.",
+      "48바이트이며 제조사와 제품에 각각 24바이트를 할당한다.",
+      "128비트(16바이트)이며 앞 64비트는 제조사 코드, 뒤 64비트는 제품 번호이다."
+    ],
+    "correct": 0,
+    "explain": "**NIC**는 매체 접속과 데이터 송수신을 담당한다. 교안의 MAC 주소는 **48비트=6바이트**, **제조사 24비트+제품 식별 24비트**이다.",
+    "trap": "제조사 할당 주소를 설명한 문맥의 답이다.",
+    "kind": "개념",
+    "predictionPage": 6,
+    "evidence": "기말 연계·연습",
+    "source": "기말 연계·연습 | L2 p.15–17; F22·F23 MAC 문항; E1 2장 문항 2"
+  },
+  {
+    "id": "2-05",
+    "chapter": 2,
+    "tier": "core",
+    "title": "꼬임선과 차폐",
+    "stem": "교안의 UTP·FTP·STP 설명에 맞는 것은?",
+    "options": [
+      "선을 꼬아 전기적 간섭을 줄이며, UTP는 별도 차폐 보호망이 없다.",
+      "선을 꼬는 목적은 간섭을 일부러 증가시키기 위해서이다.",
+      "UTP는 금속성 차폐가 가장 강한 케이블로 설명된다.",
+      "FTP는 빛만 이용하고, STP는 무선 전파만 이용한다.",
+      "교안은 STP보다 UTP가 간섭 영향을 항상 덜 받는다고 설명한다."
+    ],
+    "correct": 0,
+    "explain": "꼬는 목적은 **전기적 간섭 감소**이다. 교안의 구분은 **UTP: 별도 차폐 없음 / FTP: 전체 차폐 / STP: 차폐 강화**이다.",
+    "trap": "차폐 정도에 따른 교안의 비교이며 UTP에 외피 자체가 없다는 뜻은 아니다.",
+    "kind": "개념",
+    "predictionPage": 6,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.55–56; E1 2장 문항 10"
+  },
+  {
+    "id": "2-06",
+    "chapter": 2,
+    "tier": "core",
+    "title": "완전 그물형 링크 수",
+    "stem": "모든 노드 쌍을 하나의 링크로 연결하는 완전 그물형이다. 노드가 6개일 때 필요한 링크 수는?",
+    "options": [
+      "15개",
+      "6개",
+      "12개",
+      "30개",
+      "36개"
+    ],
+    "correct": 0,
+    "explain": "필요한 링크 수는 **n(n−1)/2**이다. **6×5÷2=15개**이며, 양쪽에서 같은 링크를 두 번 세지 않도록 2로 나눈다.",
+    "trap": "",
+    "kind": "계산",
+    "predictionPage": 7,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L2 p.46–47; n=6은 연습용 조건"
+  },
+  {
+    "id": "2-07",
+    "chapter": 2,
+    "tier": "core",
+    "title": "유선 전송매체",
+    "stem": "유선 전송매체에 대한 설명으로 옳은 것은?",
+    "options": [
+      "광섬유는 빛으로 전송하며 넓은 대역폭·낮은 감쇠·외부 간섭에 강한 특성이 있다.",
+      "광섬유는 구리선에 전류를 흘리는 방식만 사용한다.",
+      "꼬임선은 두 가닥의 유리섬유를 꼬아 빛을 전달한다.",
+      "동축 케이블에는 중심 도체와 차폐망이 없다.",
+      "모든 유선 매체는 비용과 설치 난이도가 완전히 같다."
+    ],
+    "correct": 0,
+    "explain": "**광섬유=빛**, **꼬임선=꼬인 구리선**, **동축=중심 도체·차폐망**이다. 광섬유는 간섭에 강하지만 교안은 **구축·설치 부담**도 제시한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 7,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.51–59; E1 2장 문항 8·10"
+  },
+  {
+    "id": "2-08",
+    "chapter": 2,
+    "tier": "core",
+    "title": "게이트웨이와 중계기",
+    "stem": "장치와 기능이 올바르게 연결된 것은?",
+    "options": [
+      "게이트웨이: 프로토콜 변환 / 중계기: 약해진 신호 복원·증폭·재전송",
+      "게이트웨이: 신호 복원·증폭만 수행 / 중계기: 서로 다른 프로토콜 변환",
+      "게이트웨이: 신호전력 측정만 수행 / 중계기: 수신지 IP로 경로 선택",
+      "게이트웨이: 데이터의 비트간격만 조절 / 중계기: MAC 주소 학습·필터링",
+      "게이트웨이: 같은 프로토콜 망만 연결 / 중계기: 패킷 주소를 변경해 경로 결정"
+    ],
+    "correct": 0,
+    "explain": "**게이트웨이**는 다른 종류·프로토콜의 망을 연결하고 변환한다. **중계기**는 신호를 **복원·증폭·재전송**하여 거리를 연장한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 7,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L2 p.30–32"
+  },
+  {
+    "id": "2-09",
+    "chapter": 2,
+    "tier": "core",
+    "title": "무선 AP",
+    "stem": "AP의 역할을 교안에 맞게 설명한 것은?",
+    "options": [
+      "무선 단말이 유선 이더넷에 접속하도록 하며, 무선 기능 통합 라우터는 별도 AP 없이 접속을 제공할 수 있다.",
+      "AP는 무선 단말 간 연결만 허용하며 유선 이더넷으로의 접속은 제공하지 않는다.",
+      "AP는 IP 주소를 변환하는 기능만 갖고 무선 신호는 다루지 않는다.",
+      "무선 기능 통합 라우터도 별도 AP가 있어야만 무선 단말의 접속을 제공한다.",
+      "AP는 무선 단말의 역할이므로 허브·스위치·유선 라우터에 연결할 수 없다."
+    ],
+    "correct": 0,
+    "explain": "**AP**는 무선 단말에 **유선 이더넷의 무선 액세스**를 제공한다. **무선 기능 통합 라우터**는 별도 AP 없이도 해당 접속 기능을 제공할 수 있다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 7,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.35–36; E1 2장 문항 5"
+  },
+  {
+    "id": "2-10",
+    "chapter": 2,
+    "tier": "core",
+    "title": "인트라넷",
+    "stem": "인트라넷의 정의로 옳은 것은?",
+    "options": [
+      "인터넷의 회선과 기반 기술을 이용해 구축한 사설 네트워크",
+      "라우터 없이 한 건물 내부만 연결해야 하는 네트워크",
+      "신체에 부착한 센서들만 연결하는 인체 통신망",
+      "주파수 대역을 여러 개로 나누어 전송하는 변조 방식",
+      "여러 공개 네트워크를 전용회선 없이 연결할 수 없도록 만든 통신 규칙"
+    ],
+    "correct": 0,
+    "explain": "**인트라넷**은 인터넷 기술을 이용한 **사설 네트워크**이다. 교안은 분산된 캠퍼스를 연결해 **정보 공유·비용 절감**을 하는 예를 제시한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 7,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.12–13; E1 2장 문항 1·12"
+  },
+  {
+    "id": "2-11",
+    "chapter": 2,
+    "tier": "extra",
+    "title": "네트워크 구성 요소",
+    "stem": "교안이 설명하는 네트워크 구성의 세 범주를 올바르게 묶은 것은?",
+    "options": [
+      "컴퓨터·서버 / 접속 장치 / 전송매체",
+      "진폭 / 위상 / 주파수",
+      "표본화 / 양자화 / 부호화",
+      "패리티 / CRC / BCC",
+      "VLF / HF / UHF"
+    ],
+    "correct": 0,
+    "explain": "**컴퓨터·서버**는 데이터를 생성·처리하고, **접속 장치**는 전달을 수행하며, **전송매체**는 케이블·전파 등의 통로를 제공한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 8,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L2 p.5–8"
+  },
+  {
+    "id": "2-12",
+    "chapter": 2,
+    "tier": "extra",
+    "title": "확장형·지능형 허브",
+    "stem": "스태커블 허브와 인텔리전트 허브를 바르게 비교한 것은?",
+    "options": [
+      "스태커블은 스택 포트로 용량을 확장하고, 인텔리전트는 신호 조절·변경 등 지능형 기능을 갖춘다.",
+      "스태커블은 신호 조절·변경 기능을 뜻하고, 인텔리전트는 스택 포트를 통한 확장만을 뜻한다.",
+      "스태커블은 여러 허브를 연결해도 각각 독립적으로만 동작하고 용량을 확장하지 못한다.",
+      "인텔리전트 허브에는 신호 조절·변경 기능이 없고 단순 중계 기능만 있다.",
+      "두 허브 모두 연결된 노드 수를 늘릴 수 없고, 모든 트래픽을 한 노드에만 보낸다."
+    ],
+    "correct": 0,
+    "explain": "**스태커블=스택 연결·용량 확장·하나처럼 동작**, **인텔리전트=신호 조절·변경 등 지능형 기능**으로 구분한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 8,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L2 p.24–25"
+  },
+  {
+    "id": "2-13",
+    "chapter": 2,
+    "tier": "extra",
+    "title": "혼합형 토폴로지",
+    "stem": "혼합형 접속 형태를 사용하는 이유로 가장 적절한 것은?",
+    "options": [
+      "여러 접속 형태를 결합해 대규모 네트워크의 효율과 결함 허용 능력을 높이기 위해서",
+      "모든 노드를 반드시 하나의 단순 링에만 배치하기 위해서",
+      "네트워크에서 모든 우회 경로를 없애기 위해서",
+      "서로 다른 서브넷의 연결을 금지하기 위해서",
+      "데이터 전송을 중단하고 전력만 공급하기 위해서"
+    ],
+    "correct": 0,
+    "explain": "**혼합형**은 여러 접속 형태의 **결합**이다. 노드 수가 큰 망에서 **효율·결함 허용 능력**을 높이고 서브넷들을 연결하기 위해 사용한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 8,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L2 p.48–49"
+  },
+  {
+    "id": "2-14",
+    "chapter": 2,
+    "tier": "extra",
+    "title": "라디오파와 마이크로파",
+    "stem": "교안에서 설명하는 마이크로파의 특성으로 옳은 것은?",
+    "options": [
+      "높은 주파수·짧은 파장을 가지며 직진·흡수·반사 특성이 있고 파라볼라 안테나 등을 사용한다.",
+      "낮은 주파수·긴 파장을 사용하며 지표의 굴곡을 따라 퍼지는 방식만 쓴다.",
+      "라디오파보다 항상 낮은 주파수를 사용하며 방향성이 없는 전파로만 설명된다.",
+      "구리선을 꼬아 간섭을 줄이고 중심 도체와 금속 차폐망을 매체로 사용한다.",
+      "빛을 광섬유 안에만 가두어 보내며 안테나를 이용한 무선 전송에는 사용하지 않는다."
+    ],
+    "correct": 0,
+    "explain": "교안은 **마이크로파**를 높은 주파수·짧은 파장의 전파로 설명한다. **직진·흡수·반사**, **파라볼라 안테나**를 연결해 기억한다.",
+    "trap": "라디오파·마이크로파는 여기서 교안이 나누어 설명한 문맥을 따른다.",
+    "kind": "개념",
+    "predictionPage": 8,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L2 p.60–63"
+  },
+  {
+    "id": "2-15",
+    "chapter": 2,
+    "tier": "extra",
+    "title": "라우팅 테이블",
+    "stem": "라우팅 테이블의 역할로 옳은 것은?",
+    "options": [
+      "수신지 주소를 바탕으로 다음 전달 주소와 경로를 결정하는 데 사용한다.",
+      "송신지 MAC 주소와 입력 포트를 등록해 프레임의 수신 포트를 학습한다.",
+      "모든 노드에 하나의 전용 회선을 영구적으로 할당하는 데 사용한다.",
+      "데이터의 CRC 나머지를 보관해 패킷 헤더 없이 전송한다.",
+      "패킷 도착 순서만을 기록하고 수신지 주소에 따른 경로 결정에는 사용하지 않는다."
+    ],
+    "correct": 0,
+    "explain": "**라우팅 테이블**은 수신지 기반의 **다음 전달 주소·경로 결정**에 사용된다. 교안은 라우터의 **오류 패킷 폐기·혼잡 제어** 등도 제시한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 8,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L2 p.33; E1 2장 문항 4"
+  },
+  {
+    "id": "3-01",
+    "chapter": 3,
+    "tier": "core",
+    "title": "CSMA/CD",
+    "stem": "공유 매체 이더넷에서 CSMA/CD의 전송 절차로 옳은 것은?",
+    "options": [
+      "반송파 감지 → 비어 있으면 전송 → 충돌 검출 시 임의 시간 대기 후 재전송",
+      "반송파 감지 → 사용 중이면 전송 → 충돌 시 전송을 계속 유지",
+      "토큰 수신 → 해당 노드만 전송 → 완료 후 토큰 반환",
+      "논리적 연결 설정 → VCI 부여 → 동일 경로로 패킷 전송",
+      "메시지 전체 수신·저장 → 다음 링크가 비면 전달"
+    ],
+    "correct": 0,
+    "explain": "**CSMA/CD=반송파 감지·다중 접근·충돌 검출**이다. 사용 중이면 기다리고, 비면 전송하며, 충돌 후에는 **임의 대기·재전송**한다.",
+    "trap": "교안의 공유 매체 이더넷 상황이다. 전이중 스위치 상황과 구분한다.",
+    "kind": "개념",
+    "predictionPage": 9,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L3 p.55–57; M22 문항 5; A2 문항 1"
+  },
+  {
+    "id": "3-02",
+    "chapter": 3,
+    "tier": "core",
+    "title": "네 가지 교환 방식",
+    "stem": "교환 방식에 대한 설명 중 옳은 것은?",
+    "options": [
+      "가상 회선은 전송 전에 논리적 연결을 설정하고 VCI를 사용한다.",
+      "데이터그램은 모든 패킷이 반드시 사전에 설정한 동일 경로만 이용한다.",
+      "메시지 교환은 메시지를 저장하지 않고 전용 회선을 계속 독점한다.",
+      "회선 교환은 어떤 경로도 설정하지 않고 패킷마다 독립적으로 경로를 선택한다.",
+      "가상 회선 교환은 논리적 연결 없이 매 패킷에 독립 경로를 배정한다."
+    ],
+    "correct": 0,
+    "explain": "**회선=사전 경로·독점**, **메시지=전체 저장 후 전달**, **데이터그램=사전 연결 없이 패킷별 경로**, **가상 회선=논리적 연결·VCI**이다.",
+    "trap": "가상 회선의 “논리적 연결”과 회선 교환의 독점 경로를 혼동하지 않는다.",
+    "kind": "개념",
+    "predictionPage": 9,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L3 p.70–77; M22 문항 2; A2 문항 2"
+  },
+  {
+    "id": "3-03",
+    "chapter": 3,
+    "tier": "core",
+    "title": "CRC 계산",
+    "stem": "P=10101101, G=11101이다. 교안의 CRC 송신 절차에 따른 나머지와 전송 비트열은?",
+    "options": [
+      "나머지 1011 / 전송 비트열 101011011011",
+      "나머지 1111 / 전송 비트열 101011011111",
+      "나머지 0000 / 전송 비트열 101011010000",
+      "나머지 0101 / 전송 비트열 101011010101",
+      "나머지 1101 / 전송 비트열 101011011101"
+    ],
+    "correct": 0,
+    "explain": "**G가 5비트 → FCS 4비트**이다. **101011010000 ÷ 11101**을 XOR 나눗셈하면 **1011**이다. 전송열은 **101011011011**, 수신 검사 나머지는 **0000**이다.",
+    "trap": "데이터 뒤에 0을 4개 붙인 다음 XOR로 나눈다. 수신 측의 0000은 이 예제의 검사 통과 결과이다.",
+    "kind": "계산",
+    "predictionPage": 9,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L3 p.39–44; M22 문항 3; E1 3장 객관식 5",
+    "widget": "crc"
+  },
+  {
+    "id": "3-04",
+    "chapter": 3,
+    "tier": "core",
+    "title": "패리티 계산",
+    "stem": "데이터 0100111의 짝수·홀수 패리티 비트와 패리티 검사의 한계로 옳은 것은?",
+    "options": [
+      "짝수 0 / 홀수 1 / 짝수 개 비트 오류는 검출하지 못한다.",
+      "짝수 1 / 홀수 0 / 모든 개수의 비트 오류를 반드시 검출한다.",
+      "짝수 0 / 홀수 0 / 홀수 개 비트 오류만 검출하지 못한다.",
+      "짝수 1 / 홀수 1 / 전송된 비트 오류를 자동으로 모두 정정한다.",
+      "짝수 1 / 홀수 0 / CRC 생성 다항식을 알아야만 계산할 수 있다."
+    ],
+    "correct": 0,
+    "explain": "1이 **4개**이므로 **짝수 패리티=0, 홀수 패리티=1**이다. 앞에 붙이면 **00100111 / 10100111**이다. 짝수 개가 뒤집히면 1의 홀짝성이 유지되어 검출하지 못한다.",
+    "trap": "",
+    "kind": "계산",
+    "predictionPage": 9,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.27–32; E1 3장 문항 6"
+  },
+  {
+    "id": "3-05",
+    "chapter": 3,
+    "tier": "core",
+    "title": "블록 합 검사와 BCC",
+    "stem": "블록 합 검사에 대한 설명으로 옳은 것은?",
+    "options": [
+      "수평·수직 패리티를 적용하는 2차원 검사이며, 추가하는 열 패리티 문자가 BCC이다.",
+      "수평 패리티만 적용하며, BCC는 모든 문자의 송신지 주소를 뜻한다.",
+      "문자를 하나의 다항식으로 나누고 그 나머지를 BCC라고 부른다.",
+      "수평·수직 패리티를 사용하므로 모든 다중 비트 오류를 반드시 검출한다.",
+      "수신 측에서만 검사 비트를 추가하므로 송신 측은 BCC를 전송하지 않는다."
+    ],
+    "correct": 0,
+    "explain": "**블록 합 검사=수평·수직 패리티의 2차원 검사**, **BCC=열 패리티 문자**이다. 두 문자에서 같은 두 위치가 바뀌면 검사를 통과할 수 있다.",
+    "trap": "검출 능력이 높아도 모든 오류 패턴을 검출하는 것은 아니다.",
+    "kind": "개념",
+    "predictionPage": 9,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.33–38; E1 3장 문항 6·7"
+  },
+  {
+    "id": "3-06",
+    "chapter": 3,
+    "tier": "core",
+    "title": "수신 대상에 따른 통신",
+    "stem": "송신자가 특정 그룹 전체가 아니라 그 그룹 중 가장 가까운 한 노드로 보내는 방식은?",
+    "options": [
+      "애니캐스트",
+      "유니캐스트",
+      "브로드캐스트",
+      "멀티캐스트",
+      "단방향 통신"
+    ],
+    "correct": 0,
+    "explain": "**애니캐스트**는 그룹 중 **가장 가까운 노드**로 보낸다. **유니캐스트=특정 하나**, **브로드캐스트=로컬 LAN 모두**, **멀티캐스트=특정 그룹**이다.",
+    "trap": "브로드캐스트 MAC 주소는 FF-FF-FF-FF-FF-FF이다.",
+    "kind": "개념",
+    "predictionPage": 10,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.5–10; A1 문항 4; E1 3장 문항 1"
+  },
+  {
+    "id": "3-07",
+    "chapter": 3,
+    "tier": "core",
+    "title": "전송 방향",
+    "stem": "양방향 전송이 가능하지만 동시에 송수신하지 않고 번갈아 사용하는 방식과 예는?",
+    "options": [
+      "반이중 통신 — 휴대용 무전기",
+      "단방향 통신 — 전화 통화",
+      "전이중 통신 — 한 방향 라디오 방송",
+      "반이중 통신 — 양쪽의 동시 송수신만 허용",
+      "단방향 통신 — 송신 방향을 매 순간 번갈아 변경"
+    ],
+    "correct": 0,
+    "explain": "**반이중=양방향·번갈아 송수신**, 예는 **무전기**이다. **단방향**은 한쪽으로만, **전이중**은 양쪽에서 동시에 송수신한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 10,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.11–14; A1 문항 5"
+  },
+  {
+    "id": "3-08",
+    "chapter": 3,
+    "tier": "core",
+    "title": "동기식과 비동기식",
+    "stem": "교안 L3의 동기식·비동기식 전송 설명으로 옳은 것은?",
+    "options": [
+      "동기식은 블록 단위 연속 전송, 비동기식은 문자마다 시작·정지 비트로 재동기화한다.",
+      "동기식은 도착 여부를 묻고, 비동기식은 묻지 않는 것으로만 구분한다.",
+      "비동기식은 어떤 동기화도 하지 않고 시작 비트도 사용하지 않는다.",
+      "동기식은 모든 문자의 뒤에만 정지 비트를 100개씩 붙인다.",
+      "두 방식의 유일한 차이는 전송 데이터가 사진인지 문자인지이다."
+    ],
+    "correct": 0,
+    "explain": "**동기식=블록 단위 연속 전송**, **비동기식=문자 단위·시작/정지 비트**이다. 비동기식도 문자 시작점에서 **재동기화**한다.",
+    "trap": "기준은 L3 p.17–22이다. 학생 정리 E1의 “도착 여부를 묻는가” 설명과 다름을 예상문제집에서 밝혀 두었다.",
+    "kind": "개념",
+    "predictionPage": 10,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.17–22; E1 3장 문항 5"
+  },
+  {
+    "id": "3-09",
+    "chapter": 3,
+    "tier": "core",
+    "title": "CSMA/CA",
+    "stem": "L3 p.91–92의 무선 LAN 매체 접근 설명으로 옳은 것은?",
+    "options": [
+      "CSMA/CA는 충돌 회피 방식이며, 교안은 전송 전에 수신자에게 간단한 전송 요청을 보내는 방식으로 설명한다.",
+      "CSMA/CA는 충돌 검출 방식이며, 송신 중 충돌 감시만으로 무선의 모든 문제를 해결한다.",
+      "CSMA/CA는 토큰 소유 순서에 따라 무선 LAN의 전송 권한을 넘긴다.",
+      "CSMA/CA는 사전 전용 회선을 설정해 통신 종료까지 독점하는 방식이다.",
+      "CSMA/CA는 수신자나 매체 상태와 관계없이 모든 단말이 동시에 보내는 방식이다."
+    ],
+    "correct": 0,
+    "explain": "**CSMA/CA=충돌 회피**를 위한 무선 LAN 접근 방식이다. 교안은 전송 전에 **간단한 전송 요청**을 보내는 설명을 제시한다.",
+    "trap": "L3 p.85와 p.91–92가 엇갈리는 부분이다. 이 문항은 명시한 p.91–92의 설명을 기준으로 한다.",
+    "kind": "개념",
+    "predictionPage": 10,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.91–92; E1 3장 문항 17"
+  },
+  {
+    "id": "3-10",
+    "chapter": 3,
+    "tier": "core",
+    "title": "토큰버스",
+    "stem": "토큰버스 방식의 물리적 구조와 논리적 구조로 옳은 것은?",
+    "options": [
+      "물리적 버스형 / 논리적 링형",
+      "물리적 링형 / 논리적 버스형",
+      "물리적 그물형 / 논리적 성형",
+      "물리적 성형 / 논리적 그물형",
+      "물리적·논리적 구조가 모두 존재하지 않음"
+    ],
+    "correct": 0,
+    "explain": "**토큰버스=물리적 버스·논리적 링**이다. 토큰링과 함께 **토큰을 가진 노드만 전송**하므로 공평한 기회를 제공하고 충돌을 피한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 10,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.58–60; E1 3장 문항 11"
+  },
+  {
+    "id": "3-11",
+    "chapter": 3,
+    "tier": "extra",
+    "title": "직렬·병렬 전송",
+    "stem": "직렬·병렬 전송에 대한 교안의 비교로 옳은 것은?",
+    "options": [
+      "직렬은 한 회선으로 1비트씩, 병렬은 n개 회선으로 n비트를 동시에 전송한다.",
+      "직렬은 n개 회선으로 n비트를 동시에, 병렬은 한 회선으로 1비트씩 전송한다.",
+      "직렬과 병렬은 모두 한 회선만 쓰며, 차이는 시작 비트를 붙이는지 여부이다.",
+      "직렬은 항상 문자 블록 전체를 동시에 보내고, 병렬은 비트를 한 개씩만 보낸다.",
+      "병렬은 회선 비용이 거리와 무관하므로 교안에서는 주로 원거리 연결에 적합하다고 한다."
+    ],
+    "correct": 0,
+    "explain": "**직렬=1회선·1비트씩**, **병렬=n회선·n비트 동시**이다. 교안은 직렬을 **원거리의 경제성**, 병렬을 **짧은 거리의 빠른 전송**과 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 11,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L3 p.15–16, 23"
+  },
+  {
+    "id": "3-12",
+    "chapter": 3,
+    "tier": "extra",
+    "title": "베이스밴드와 이더넷 명칭",
+    "stem": "10Base-5의 이름을 교안에 따라 해석한 것은?",
+    "options": [
+      "10Mbps / 베이스밴드 / 최장 세그먼트 500m",
+      "10Gbps / 브로드밴드 / 최장 세그먼트 5m",
+      "10MHz / 브로드밴드 / 연결 가능한 노드 5개",
+      "10바이트 / 패킷 교환 / 최장 세그먼트 50m",
+      "100Mbps / 베이스밴드 / 최장 세그먼트 5km"
+    ],
+    "correct": 0,
+    "explain": "**10=10Mbps**, **Base=베이스밴드**, **5=500m**이다. **베이스밴드**는 디지털 신호를 직접, **브로드밴드**는 아날로그로 변조해 여러 주파수 채널로 전송한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 11,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.51–53, 63; E1 3장 문항 9"
+  },
+  {
+    "id": "3-13",
+    "chapter": 3,
+    "tier": "extra",
+    "title": "ATM 셀",
+    "stem": "ATM 셀 하나의 구성과 전체 크기는?",
+    "options": [
+      "데이터 48바이트 + 제어 정보 5바이트 = 53바이트",
+      "데이터 53바이트 + 제어 정보 5바이트 = 58바이트",
+      "데이터 5바이트 + 제어 정보 48바이트 = 53바이트",
+      "데이터 48비트 + 제어 정보 5비트 = 53비트",
+      "데이터와 제어 정보를 합해 매번 다른 길이를 사용하는 가변 셀"
+    ],
+    "correct": 0,
+    "explain": "**ATM**은 **고정 길이 셀**을 사용한다. **48바이트 데이터+5바이트 제어 정보=53바이트**이다.",
+    "trap": "비트가 아니라 바이트이며, 데이터와 제어 정보의 크기를 뒤바꾸지 않는다.",
+    "kind": "개념",
+    "predictionPage": 11,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L3 p.78"
+  },
+  {
+    "id": "3-14",
+    "chapter": 3,
+    "tier": "extra",
+    "title": "무선 LAN 구성",
+    "stem": "무선 LAN 구성의 설명으로 옳은 것은?",
+    "options": [
+      "ESS는 AP가 있는 둘 이상의 BSS를 분산 시스템으로 연결한 집합이다.",
+      "BSS는 AP가 있는 여러 ESS를 연결한 확장 서비스 집합이다.",
+      "애드혹은 AP 중심으로, 하부 구조 모드는 AP 없이 단말끼리 연결한다.",
+      "ESS는 단 하나의 BSS로만 구성되며 분산 시스템을 사용하지 않는다.",
+      "하부 구조 모드는 단말끼리의 직접 연결만 허용하므로 AP를 두지 않는다."
+    ],
+    "correct": 0,
+    "explain": "**BSS=기본 서비스 집합**, **ESS=AP가 있는 여러 BSS의 연결**이다. **애드혹**은 단말끼리, **하부 구조 모드**는 AP 중심으로 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 11,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.82, 89–90; E1 3장 문항 16"
+  },
+  {
+    "id": "3-15",
+    "chapter": 3,
+    "tier": "extra",
+    "title": "SSID와 채널 간섭",
+    "stem": "SSID와 무선 채널에 대한 교안의 설명으로 옳은 것은?",
+    "options": [
+      "SSID는 무선 네트워크 이름이며, 802.11b/g는 채널 번호가 달라도 주파수가 겹쳐 간섭할 수 있다.",
+      "SSID는 모든 무선 패킷의 전송속도를 바이트로 나타낸 값이다.",
+      "채널 번호가 다르면 모든 규격에서 주파수가 절대로 겹치지 않는다.",
+      "SSID는 무선 네트워크에서 쓰지 않고 광섬유에서만 사용한다.",
+      "AP 연결은 승인 → 연결 요청 → 비콘의 역순으로만 진행한다."
+    ],
+    "correct": 0,
+    "explain": "**SSID=무선 네트워크 이름**이다. 교안의 연결 흐름은 **비콘 → SSID 확인 → 인증 확인 → 연결 요청·승인**이다. **802.11b/g는 다른 채널도 간섭**할 수 있다.",
+    "trap": "L3 p.98의 예외를 반영한다. 채널 번호가 다르다는 사실만으로 간섭이 없다고 단정하지 않는다.",
+    "kind": "개념",
+    "predictionPage": 11,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L3 p.94–98; E1 3장 문항 15·18"
+  },
+  {
+    "id": "4-01",
+    "chapter": 4,
+    "tier": "core",
+    "title": "OSI 7계층",
+    "stem": "OSI 계층을 아래에서 위로 올바르게 나열한 것은?",
+    "options": [
+      "물리 → 데이터 링크 → 네트워크 → 전송 → 세션 → 표현 → 응용",
+      "물리 → 네트워크 → 데이터 링크 → 전송 → 표현 → 세션 → 응용",
+      "응용 → 표현 → 세션 → 전송 → 네트워크 → 데이터 링크 → 물리",
+      "물리 → 데이터 링크 → 전송 → 네트워크 → 세션 → 표현 → 응용",
+      "물리 → 데이터 링크 → 네트워크 → 세션 → 전송 → 응용 → 표현"
+    ],
+    "correct": 0,
+    "explain": "아래부터 **물·데·네·전·세·표·응**이다. **네트워크=경로**, **전송=종단 프로세스 전달**, **세션=대화·동기화**, **표현=형식 변환**, **응용=통신 서비스**로 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 12,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L4 p.6, 16, 21–23, 35–40; M22 문항 1; A2 문항 3"
+  },
+  {
+    "id": "4-02",
+    "chapter": 4,
+    "tier": "core",
+    "title": "SDU·PDU",
+    "stem": "SDU·PDU와 계층별 데이터 단위를 올바르게 설명한 것은?",
+    "options": [
+      "SDU는 상하 계층 사이, PDU는 같은 계층 사이의 단위이며 데이터 링크의 PDU는 프레임이다.",
+      "SDU는 같은 계층 사이, PDU는 상하 계층 사이의 데이터만을 뜻한다.",
+      "네트워크 계층의 PDU는 비트, 물리 계층의 PDU는 세그먼트이다.",
+      "수신 시에는 헤더를 계속 추가하고 송신 시에는 모두 제거한다.",
+      "데이터 링크의 PDU는 세그먼트, 전송 계층의 PDU는 프레임이다."
+    ],
+    "correct": 0,
+    "explain": "**SDU=상하 계층**, **PDU=같은 계층**의 단위이다. 교안은 **세그먼트(전송)·패킷(네트워크)·프레임(데이터 링크)·비트(물리)**로 구분한다. **송신 때 추가·수신 때 제거**한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 12,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L4 p.6–10, 19; E1 4장 빈칸 3·객관식 2"
+  },
+  {
+    "id": "4-03",
+    "chapter": 4,
+    "tier": "core",
+    "title": "TCP/IP 대응 관계",
+    "stem": "TCP/IP 모델의 응용 계층에 대응하는 OSI 계층의 묶음은?",
+    "options": [
+      "세션 + 표현 + 응용",
+      "물리 + 데이터 링크",
+      "네트워크 + 전송",
+      "물리 + 네트워크 + 표현",
+      "데이터 링크 + 세션"
+    ],
+    "correct": 0,
+    "explain": "TCP/IP의 **응용=OSI 세션·표현·응용**이다. **네트워크 접근(접속)=물리·데이터 링크**, **인터넷(네트워크)=네트워크**, **전송=전송**이다.",
+    "trap": "괄호의 명칭은 교안 앞·뒷부분의 서로 다른 표기를 함께 적은 것이다.",
+    "kind": "개념",
+    "predictionPage": 12,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.14, 42–43"
+  },
+  {
+    "id": "4-04",
+    "chapter": 4,
+    "tier": "core",
+    "title": "Ethernet II 헤더",
+    "stem": "Ethernet II 헤더를 앞에서부터 읽을 때, 필드 순서와 길이가 옳은 것은?",
+    "options": [
+      "수신지 MAC 6바이트 + 송신지 MAC 6바이트 + Type 2바이트 = 14바이트",
+      "수신지 MAC 4바이트 + 송신지 MAC 4바이트 + Type 2바이트 = 10바이트",
+      "송신지 MAC 6바이트 + 수신지 MAC 6바이트 + Type 2바이트 = 14바이트",
+      "수신지 MAC 6바이트 + 송신지 MAC 6바이트 + FCS 4바이트 = 16바이트",
+      "수신지 MAC 6비트 + 송신지 MAC 6비트 + Type 2비트 = 14비트"
+    ],
+    "correct": 0,
+    "explain": "헤더는 **6+6+2=14바이트**이다. **Type**은 뒤의 프로토콜을 나타내며, 데이터 뒤의 **FCS**는 오류 검사용 **트레일러**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 12,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L4 p.24–25, 49–50; E1 4장 문항 8"
+  },
+  {
+    "id": "4-05",
+    "chapter": 4,
+    "tier": "core",
+    "title": "스위치 MAC 학습",
+    "stem": "빈 MAC 테이블의 스위치에서 A(포트1)가 B(포트3)로 보낸 뒤 B가 응답한다. 올바른 동작은?",
+    "options": [
+      "A·포트1 학습 후 다른 포트로 플러딩하고, 응답 때 B·포트3을 학습한 뒤 포트1로 전달한다.",
+      "처음부터 B·포트3을 수신지 주소만으로 학습하고 포트3으로만 전달한다.",
+      "A가 처음 보내면 수신지 B가 없으므로 반드시 프레임을 버린다.",
+      "B가 응답하면 A의 위치를 이미 알아도 반드시 모든 포트로만 전송한다.",
+      "프레임의 MAC 주소 대신 전송 시각만 학습하므로 테이블을 만들 수 없다."
+    ],
+    "correct": 0,
+    "explain": "스위치는 **송신지 MAC+입력 포트**를 학습한다. 모르는 수신지는 **입력 포트 제외 플러딩**, B 응답 시에는 이미 아는 **포트1로 전달**한다.",
+    "trap": "학습은 송신지 기준, 전달 판단은 수신지 기준이다.",
+    "kind": "적용",
+    "predictionPage": 12,
+    "evidence": "교안 응용·연습",
+    "source": "교안 응용·연습 | L4 p.32–34; E1 4장 문항 9·10; A·B·포트 번호는 연습 조건",
+    "widget": "switch"
+  },
+  {
+    "id": "4-06",
+    "chapter": 4,
+    "tier": "core",
+    "title": "물리 계층의 특성",
+    "stem": "물리 계층의 네 가지 특성과 예를 올바르게 연결한 것은?",
+    "options": [
+      "기계적: 커넥터·핀 / 전기적: 전압 / 기능적: 데이터·제어·접지 / 절차적: 동작 순서",
+      "기계적: 전압 / 전기적: 커넥터·핀 / 기능적: 동작 순서 / 절차적: 접지",
+      "기계적: 커넥터·핀 / 전기적: 동작 순서 / 기능적: 전압 / 절차적: 접지",
+      "기계적: 데이터·제어 / 전기적: 커넥터·핀 / 기능적: 접지 / 절차적: 전압",
+      "기계적: 활성화 순서 / 전기적: 데이터 기능 / 기능적: 핀 수 / 절차적: 전압"
+    ],
+    "correct": 0,
+    "explain": "**기계적=커넥터·핀**, **전기적=전압**, **기능적=데이터·제어·타이밍·접지**, **절차적=연결 활성화·비활성화의 순서**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 13,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.16–18"
+  },
+  {
+    "id": "4-07",
+    "chapter": 4,
+    "tier": "core",
+    "title": "데이터 링크 계층 기능",
+    "stem": "데이터 링크 계층의 기능과 설명을 올바르게 연결한 것은?",
+    "options": [
+      "흐름 제어 — 한 번에 전송할 데이터양을 조절한다.",
+      "주소 지정 — 최종 응용프로그램의 데이터 형식을 협상한다.",
+      "프레임 구성 — 네트워크 연결 경로를 배정하고 중계한다.",
+      "오류 처리 — 전송할 양만 조절하며 오류 검출·재전송에는 관여하지 않는다.",
+      "순서 제어 — 프레임 번호 대신 케이블의 전압만으로 순서를 구분한다."
+    ],
+    "correct": 0,
+    "explain": "**흐름 제어**는 전송량 조절이다. 데이터 링크 계층은 **주소 지정·프레임 구성·순서 제어·오류 처리·동기화·링크 설정**도 담당한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 13,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L4 p.21–23; E1 4장 문항 6"
+  },
+  {
+    "id": "4-08",
+    "chapter": 4,
+    "tier": "core",
+    "title": "충돌 도메인",
+    "stem": "교안의 허브와 전이중 스위치 비교로 옳은 것은?",
+    "options": [
+      "허브의 공유 범위에서는 충돌이 생길 수 있고, 전이중 스위치는 범위를 좁히며 동시 송수신한다.",
+      "전이중 스위치는 송수신을 반드시 한 번씩 번갈아 수행한다.",
+      "충돌 도메인은 전자기파의 주파수 차이를 나타내는 단위이다.",
+      "허브와 스위치는 공유 방식과 송수신 특성이 완전히 같다.",
+      "전이중 스위치에서는 어느 포트도 데이터를 받을 수 없다."
+    ],
+    "correct": 0,
+    "explain": "**충돌 도메인**은 충돌의 영향을 받는 범위이다. 교안의 **허브=공유·충돌 가능**, **전이중 스위치=범위 축소·동시 송수신**으로 구분한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 13,
+    "evidence": "과제·연습",
+    "source": "과제·연습 | L4 p.30–31; E1 4장 문항 10"
+  },
+  {
+    "id": "4-09",
+    "chapter": 4,
+    "tier": "core",
+    "title": "16진수 헤더 읽기",
+    "stem": "Ethernet II 헤더가 다음과 같다. 송신지 MAC 주소와 Type의 연결로 옳은 것은?\n00 23 aa 88 cd 49 18 31 bf 28 31 75 08 00",
+    "options": [
+      "18:31:BF:28:31:75 / 0x0800 (IPv4)",
+      "00:23:AA:88:CD:49 / 0x0800 (IPv4)",
+      "18:31:BF:28:31:75 / 0x0806 (ARP)",
+      "00:23:AA:88:CD:49 / 0x86DD (IPv6)",
+      "BF:28:31:75:08:00 / 0x1823 (IPv4)"
+    ],
+    "correct": 0,
+    "explain": "앞에서 **6·6·2바이트**로 나눈다. 수신지는 **00:23:AA:88:CD:49**, 송신지는 **18:31:BF:28:31:75**, Type은 **0x0800=IPv4**이다.",
+    "trap": "16진수 두 자리=1바이트이다. 앞 6바이트는 수신지이지 송신지가 아니다.",
+    "kind": "적용",
+    "predictionPage": 13,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L4 p.44–45, 49–53; 실습 헤더 값 사용"
+  },
+  {
+    "id": "4-10",
+    "chapter": 4,
+    "tier": "core",
+    "title": "MAC 주소의 관리 비트",
+    "stem": "MAC 주소의 I/G 비트와 U/L(LG) 비트 설명으로 옳은 것은?",
+    "options": [
+      "I/G는 개별·그룹 주소를 구분하고, U/L(LG)은 로컬 관리 여부를 구분한다.",
+      "I/G는 로컬 관리 여부, U/L(LG)은 개별·그룹 주소를 구분한다.",
+      "I/G=0은 그룹 주소, I/G=1은 개별 주소를 뜻한다.",
+      "U/L=0·factory default는 교안에서 로컬로 바꾼 주소라고 설명한다.",
+      "두 비트는 모두 제조사 코드와 제품 식별 번호의 길이를 변경하는 데 사용한다."
+    ],
+    "correct": 0,
+    "explain": "**I/G: 0=개별, 1=그룹**이다. **U/L(LG)**은 로컬 관리 여부를 구분하며, 교안은 **0·factory default**를 제조 시 부여된 주소로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 13,
+    "evidence": "기말 연계·교안",
+    "source": "기말 연계·교안 | L4 p.49, 52; F22·F23·F24의 MAC 주제 연계"
+  },
+  {
+    "id": "4-11",
+    "chapter": 4,
+    "tier": "extra",
+    "title": "MAC·LLC",
+    "stem": "데이터 링크 계층의 MAC과 LLC를 바르게 비교한 것은?",
+    "options": [
+      "MAC은 같은 채널의 접근 방법을 제어하고, LLC는 장비 간 논리적 연결·유지를 담당한다.",
+      "MAC은 논리적 연결 유지, LLC는 같은 채널의 매체 접근 방법 제어를 담당한다.",
+      "MAC은 종단 프로세스 간 전달, LLC는 데이터 표현 형식 변환을 담당한다.",
+      "MAC은 경로 배정, LLC는 라우터 간 IP 패킷 중계만 담당한다.",
+      "MAC과 LLC는 모두 물리 계층의 전압 레벨만 정의하며 데이터 링크 계층과 무관하다."
+    ],
+    "correct": 0,
+    "explain": "**MAC=매체 접근 제어**, **LLC=논리 링크 제어**이다. 교안은 각각 **공유 채널의 통신 방법**, **장비 간 연결·유지**로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 14,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.30"
+  },
+  {
+    "id": "4-12",
+    "chapter": 4,
+    "tier": "extra",
+    "title": "연결형 서비스",
+    "stem": "네트워크 계층의 연결형 서비스 동작 순서로 옳은 것은?",
+    "options": [
+      "논리적 연결 설정 → 데이터 전송 → 연결 종료",
+      "데이터 전송 → 연결 종료 → 처음으로 연결 설정",
+      "연결 종료 → 연결 종료 → 연결 종료",
+      "사전 연결 없이 모든 PDU를 독립 전송하며 연결 단계는 없다.",
+      "표본화 → 양자화 → 부호화"
+    ],
+    "correct": 0,
+    "explain": "**연결형**은 **연결설정 → 데이터 전송 → 연결종료** 순으로 동작한다. **비연결형**은 논리적 회선을 먼저 설정하지 않고 PDU를 전송한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 14,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.35–36"
+  },
+  {
+    "id": "4-13",
+    "chapter": 4,
+    "tier": "extra",
+    "title": "OSI 전송 프로토콜 등급",
+    "stem": "교안의 OSI 전송 프로토콜 등급 0→4의 순서로 옳은 것은?",
+    "options": [
+      "단순 → 기본 오류복원 → 다중화 → 오류복원 및 다중화 → 오류검출과 복원",
+      "다중화 → 단순 → 기본 오류복원 → 오류검출과 복원 → 오류복원 및 다중화",
+      "기본 오류복원 → 다중화 → 단순 → 오류복원 및 다중화 → 오류검출과 복원",
+      "오류검출과 복원 → 오류복원 및 다중화 → 다중화 → 기본 오류복원 → 단순",
+      "단순 → 다중화 → 오류검출과 복원 → 기본 오류복원 → 오류복원 및 다중화"
+    ],
+    "correct": 0,
+    "explain": "**0 단순 / 1 기본 오류복원 / 2 다중화 / 3 오류복원·다중화 / 4 오류검출·복원**이다. 네트워크 서비스 품질에 따라 구분한 교안의 등급이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 14,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.37–38"
+  },
+  {
+    "id": "4-14",
+    "chapter": 4,
+    "tier": "extra",
+    "title": "응용 서비스 요소",
+    "stem": "응용 계층의 CASE와 SASE를 올바르게 연결한 것은?",
+    "options": [
+      "CASE: 여러 응용의 공통 서비스 / SASE: 파일 전송·가상 단말 등 특정 서비스",
+      "CASE: 특정 기능의 서비스 / SASE: 여러 응용의 공통 서비스",
+      "CASE: 사용자가 서비스를 이용하는 요소 / SASE: 공통 서비스 요소",
+      "CASE: 공유 채널의 접근 제어 / SASE: 장비 간 논리 링크 연결·유지",
+      "CASE: 커넥터·핀 배치 / SASE: 연결 활성화·비활성화 순서"
+    ],
+    "correct": 0,
+    "explain": "**CASE=공통 응용서비스 요소**, **SASE=특정 응용서비스 요소**이다. 사용자 요소 **EU/UE**는 응용프로그램이 통신 서비스를 이용하는 요소이다.",
+    "trap": "교안 p.40의 EU와 p.41의 UE 표기가 달라 두 표기를 함께 적었다.",
+    "kind": "개념",
+    "predictionPage": 14,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L4 p.40–41"
+  },
+  {
+    "id": "4-15",
+    "chapter": 4,
+    "tier": "extra",
+    "title": "프레임 캡처 정보",
+    "stem": "L4 p.48 기준으로 Frame Number·Frame Length·Capture Length의 연결이 옳은 것은?",
+    "options": [
+      "Frame Number: 순번 / Frame Length: 프레임 크기 / Capture Length: 캡처된 크기",
+      "Frame Number: 프레임 크기 / Frame Length: 순번 / Capture Length: 캡처된 크기",
+      "Frame Number: 순번 / Frame Length: 캡처된 크기 / Capture Length: 원래 프레임 크기",
+      "Frame Number: 캡처 시각 / Frame Length: 프레임 순번 / Capture Length: 경과 시간",
+      "Frame Number: 전체 패킷 개수 / Frame Length: Type 값 / Capture Length: 송신지 MAC 길이"
+    ],
+    "correct": 0,
+    "explain": "**Number=순번**, **Frame Length=프레임 크기**, **Capture Length=캡처된 크기**이다. 크기의 단위는 **바이트**이다.",
+    "trap": "학생 정리 E1의 “크기=Frame Number” 답과 다르므로, 이 문항은 L4 p.48의 설명을 기준으로 한다.",
+    "kind": "개념",
+    "predictionPage": 14,
+    "evidence": "교안·연습 연계",
+    "source": "교안·연습 연계 | L4 p.47–48; E1 4장 객관식 7과 대조"
+  },
+  {
+    "id": "5-01",
+    "chapter": 5,
+    "tier": "core",
+    "title": "샤논 채널용량",
+    "stem": "W=3kHz, S/N=31(전력비)이다. 샤논의 법칙 C=W log₂(1+S/N)에 따른 채널용량은?",
+    "options": [
+      "15,000bps",
+      "3,000bps",
+      "9,000bps",
+      "93,000bps",
+      "150bps"
+    ],
+    "correct": 0,
+    "explain": "**W=3,000Hz**, **1+S/N=32**, **log₂32=5**이다. 따라서 **C=3,000×5=15,000bps=15kbps**이다.",
+    "trap": "31은 dB가 아니라 전력비이다. kHz를 Hz로 바꾼다.",
+    "kind": "계산",
+    "predictionPage": 15,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.19; 수치는 연습용 조건"
+  },
+  {
+    "id": "5-02",
+    "chapter": 5,
+    "tier": "core",
+    "title": "주기·주파수 변환",
+    "stem": "f=2kHz일 때의 주기와, T=0.25ms일 때의 주파수는 각각?",
+    "options": [
+      "0.5ms / 4kHz",
+      "2ms / 0.25kHz",
+      "0.5s / 4Hz",
+      "0.25ms / 2kHz",
+      "500ms / 400kHz"
+    ],
+    "correct": 0,
+    "explain": "**T=1/f**, **f=1/T**이다. **1/2,000s=0.5ms**, **1/0.00025s=4,000Hz=4kHz**이다.",
+    "trap": "",
+    "kind": "계산",
+    "predictionPage": 15,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.9; 수치는 연습용 조건"
+  },
+  {
+    "id": "5-03",
+    "chapter": 5,
+    "tier": "core",
+    "title": "대역폭 계산",
+    "stem": "최저 주파수가 1,000Hz, 최고 주파수가 10,000Hz인 신호의 대역폭은?",
+    "options": [
+      "9,000Hz",
+      "11,000Hz",
+      "10Hz",
+      "10,000Hz",
+      "1,000Hz"
+    ],
+    "correct": 0,
+    "explain": "**대역폭=최고 주파수−최저 주파수**이므로 **10,000−1,000=9,000Hz(9kHz)**이다.",
+    "trap": "합이 아니라 차이다.",
+    "kind": "계산",
+    "predictionPage": 15,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.11의 주파수 그림"
+  },
+  {
+    "id": "5-04",
+    "chapter": 5,
+    "tier": "core",
+    "title": "비트간격과 비트율",
+    "stem": "한 비트를 전송하는 데 2μs가 걸린다. 이때의 비트율은?",
+    "options": [
+      "500,000bps (500kbps)",
+      "2bps",
+      "500bps",
+      "2,000,000bps (2Mbps)",
+      "0.000002bps"
+    ],
+    "correct": 0,
+    "explain": "**비트율=1/비트간격**이다. **1/(2×10⁻⁶)=500,000bps=500kbps**이다.",
+    "trap": "μs는 10⁻⁶초이다. 한 비트에 걸리는 시간과 초당 비트 수는 역수 관계이다.",
+    "kind": "계산",
+    "predictionPage": 15,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.16; 시간과 비트 수 정의를 이용한 계산"
+  },
+  {
+    "id": "5-05",
+    "chapter": 5,
+    "tier": "core",
+    "title": "데시벨과 전력비",
+    "stem": "dB=10 log₁₀(P₁/P₂)이다. 전력비 100의 dB값과 30dB의 전력비는 각각?",
+    "options": [
+      "20dB / 1,000",
+      "100dB / 30",
+      "10dB / 3",
+      "40dB / 100",
+      "2dB / 10,000"
+    ],
+    "correct": 0,
+    "explain": "**10 log₁₀100=20dB**이다. **30=10 log₁₀비율**이므로 전력비는 **10³=1,000**이다.",
+    "trap": "이 공식은 두 신호의 전력비에 대한 교안 공식이다.",
+    "kind": "계산",
+    "predictionPage": 15,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.19; 수치는 연습용 조건"
+  },
+  {
+    "id": "5-06",
+    "chapter": 5,
+    "tier": "core",
+    "title": "아날로그·디지털 신호",
+    "stem": "아날로그 신호와 디지털 신호의 값의 형태를 옳게 설명한 것은?",
+    "options": [
+      "아날로그는 연속값, 디지털은 이산값을 갖는다.",
+      "아날로그는 이산값, 디지털은 연속값을 갖는다.",
+      "아날로그와 디지털 모두 연속값이며, 차이는 주기성의 유무뿐이다.",
+      "디지털 신호는 주기적일 수 없고 아날로그 신호는 비주기적일 수 없다.",
+      "아날로그는 진폭만, 디지털은 주파수만으로 정의되며 값의 연속성은 관계없다."
+    ],
+    "correct": 0,
+    "explain": "**아날로그=연속값**, **디지털=이산값**이다. 교안은 디지털 신호를 **일련의 전압 펄스**로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 16,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.2–3, 16"
+  },
+  {
+    "id": "5-07",
+    "chapter": 5,
+    "tier": "core",
+    "title": "진폭의 의미",
+    "stem": "진폭(Amplitude)을 교안에 맞게 설명한 것은?",
+    "options": [
+      "신호의 높이, 즉 임의의 시점에서 신호가 갖는 값이다.",
+      "신호가 한 사이클을 이루는 데 걸리는 시간만을 뜻한다.",
+      "초당 반복되는 사이클 수만을 뜻한다.",
+      "시각 0을 기준으로 한 파형의 상대적 위치만을 뜻한다.",
+      "송신지의 MAC 주소와 포트 번호의 조합이다."
+    ],
+    "correct": 0,
+    "explain": "**진폭=신호의 높이·시점별 값**이다. 교안은 신호 종류에 따라 **볼트·암페어·와트**로 측정한다고 설명한다.",
+    "trap": "한 사이클의 시간은 주기, 초당 사이클 수는 주파수, 상대적 위치는 위상이다.",
+    "kind": "개념",
+    "predictionPage": 16,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.6–7"
+  },
+  {
+    "id": "5-08",
+    "chapter": 5,
+    "tier": "core",
+    "title": "위상과 시작 상태",
+    "stem": "교안의 정현파 그림에서 시각 0에 양의 최대값으로 시작하는 위상은?",
+    "options": [
+      "90°",
+      "0°",
+      "180°",
+      "270°",
+      "360°"
+    ],
+    "correct": 0,
+    "explain": "교안의 그림은 **0°: 0에서 상승 / 90°: 양의 최대 / 180°: 0에서 하강 / 270°: 음의 최대**이다. **위상**은 시각 0 기준 파형의 상대적 위치이다.",
+    "trap": "",
+    "kind": "그림",
+    "predictionPage": 16,
+    "evidence": "교안 그림",
+    "source": "교안 그림 | L5 p.8",
+    "widget": "phase"
+  },
+  {
+    "id": "5-09",
+    "chapter": 5,
+    "tier": "core",
+    "title": "주기적·비주기적 신호",
+    "stem": "주기적 신호와 비주기적 신호의 구분으로 옳은 것은?",
+    "options": [
+      "주기적 신호는 같은 패턴이 일정 주기마다 반복되고, 비주기적 신호는 같은 패턴 반복 없이 변한다.",
+      "비주기적 신호는 같은 패턴을 일정 주기로 반복하고, 주기적 신호는 불규칙하게 변한다.",
+      "아날로그 신호는 항상 주기적이고, 디지털 신호는 항상 비주기적이다.",
+      "주기적 신호는 진폭이 변하지 않아야 하고, 비주기적 신호는 주파수 성분을 갖지 않는다.",
+      "두 형태는 주기성 대신 연속값인지 이산값인지로만 구분한다."
+    ],
+    "correct": 0,
+    "explain": "**주기적=같은 패턴의 반복**, **비주기적=동일 패턴 반복 없이 변화**이다. 아날로그·디지털의 구분과 주기성의 구분은 나누어 이해한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 16,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.4–5"
+  },
+  {
+    "id": "5-10",
+    "chapter": 5,
+    "tier": "core",
+    "title": "푸리에 분석",
+    "stem": "복합 아날로그 신호와 푸리에 분석의 관계로 옳은 것은?",
+    "options": [
+      "여러 정현파가 합쳐진 복합 신호를 푸리에 분석으로 정현파 성분으로 분해한다.",
+      "푸리에 분석은 정현파 성분을 제거해 복합 신호를 반드시 직류로 만드는 과정이다.",
+      "복합 신호는 하나의 정현파이고, 단순 신호는 여러 정현파 성분의 합이다.",
+      "주파수 스펙트럼은 신호 구성 성분이 아니라 한 비트를 전송하는 시간이다.",
+      "푸리에 분석은 여러 신호의 최고·최저 주파수 차이만 계산하는 과정이다."
+    ],
+    "correct": 0,
+    "explain": "**단순 신호=하나의 정현파**, **복합 신호=여러 정현파의 합**이다. **푸리에 분석**으로 성분을 분해하며, 그 성분들의 조합이 **주파수 스펙트럼**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 16,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.10–11"
+  },
+  {
+    "id": "5-11",
+    "chapter": 5,
+    "tier": "extra",
+    "title": "음성·데이터 사용 구간",
+    "stem": "교안 L5 p.13의 음성·데이터용 사용 구간과 대역폭의 연결로 옳은 것은?",
+    "options": [
+      "음성 300~3,300Hz: 3,000Hz / 데이터 600~3,000Hz: 2,400Hz",
+      "음성 600~3,000Hz: 3,000Hz / 데이터 300~3,300Hz: 2,400Hz",
+      "음성 300~3,300Hz: 3,600Hz / 데이터 600~3,000Hz: 3,600Hz",
+      "음성 0~300Hz: 300Hz / 데이터 0~600Hz: 600Hz",
+      "음성·데이터 모두 300~3,300Hz: 2,400Hz"
+    ],
+    "correct": 0,
+    "explain": "교안 그림은 **음성 300~3,300Hz → 3,000Hz**, **데이터 600~3,000Hz → 2,400Hz**이다. 데이터는 가장자리 구간을 제외해 사용한다.",
+    "trap": "",
+    "kind": "계산",
+    "predictionPage": 17,
+    "evidence": "교안 그림",
+    "source": "교안 그림 | L5 p.12–13의 음성·데이터 사용 구간"
+  },
+  {
+    "id": "5-12",
+    "chapter": 5,
+    "tier": "extra",
+    "title": "조파의 합성",
+    "stem": "교안에서 설명하는 디지털 신호의 조파와 합성에 대한 내용으로 옳은 것은?",
+    "options": [
+      "조파는 분해된 정현파 성분이며, 여러 조파를 더하면 원래의 디지털 펄스에 가까워진다.",
+      "조파는 신호의 직류 평균값만을 뜻하며 시간에 따라 변하지 않는 성분이다.",
+      "조파를 더할수록 디지털 펄스에서 멀어져 항상 하나의 정현파만 남는다.",
+      "조파는 패킷을 재조립할 때 사용하는 일련번호의 집합이다.",
+      "디지털 신호는 정현파로 분해할 수 없으므로 조파 합성도 불가능하다."
+    ],
+    "correct": 0,
+    "explain": "**조파(harmonic)**는 디지털 신호를 분해한 **정현파 성분**이다. 교안 그림에서 성분들을 더할수록 **원래의 펄스 파형**에 가까워진다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 17,
+    "evidence": "교안 그림",
+    "source": "교안 그림 | L5 p.17"
+  },
+  {
+    "id": "5-13",
+    "chapter": 5,
+    "tier": "extra",
+    "title": "왜곡과 주요 스펙트럼",
+    "stem": "디지털 신호의 왜곡 원인과 주요 스펙트럼을 교안에 맞게 설명한 것은?",
+    "options": [
+      "매체가 모든 주파수 성분을 온전히 전달하지 못하며, 허용 가능한 왜곡 내 재생에 쓰는 부분이 주요 스펙트럼이다.",
+      "모든 주파수 성분은 온전히 전달되며, 주요 스펙트럼은 수신지 주소만 뜻한다.",
+      "주요 스펙트럼은 재생에 쓰는 성분이 아니라 반드시 버려야 하는 성분만을 뜻한다.",
+      "매체가 일부 성분만 전달하더라도 디지털 펄스 파형은 어떤 경우에도 왜곡되지 않는다.",
+      "신호의 왜곡 원인은 주파수 성분과 무관하며 오직 패킷의 도착 순서만으로 정해진다."
+    ],
+    "correct": 0,
+    "explain": "**모든 주파수 성분을 온전히 전송하지 못함**이 교안의 왜곡 설명이다. **주요 스펙트럼**은 허용 가능한 왜곡 수준에서 **재생에 사용하는 부분**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 17,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.18"
+  },
+  {
+    "id": "5-14",
+    "chapter": 5,
+    "tier": "extra",
+    "title": "무선 주파수 대역",
+    "stem": "교안의 무선 주파수 대역 연결로 옳은 것은?",
+    "options": [
+      "VHF: 30~300MHz / UHF: 300MHz~3GHz",
+      "VHF: 3~30kHz / UHF: 30~300kHz",
+      "VHF: 3~30GHz / UHF: 30~300GHz",
+      "VHF: 300kHz~3MHz / UHF: 3~30MHz",
+      "VHF: 30~300Hz / UHF: 300~3,000Hz"
+    ],
+    "correct": 0,
+    "explain": "순서는 **VLF→LF→MF→HF→VHF→UHF→SHF→EHF**이다. **VHF=30~300MHz**, **UHF=300MHz~3GHz**, **SHF=3~30GHz**이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 17,
+    "evidence": "교안 표",
+    "source": "교안 표 | L5 p.14"
+  },
+  {
+    "id": "5-15",
+    "chapter": 5,
+    "tier": "extra",
+    "title": "전파 방식",
+    "stem": "교안 L5 p.15의 전파 방식 분류와 대응 종류로 옳은 것은?",
+    "options": [
+      "전리층 전파 — HF",
+      "지표면 전파 — SHF·EHF",
+      "대류권 전파 — VHF·UHF",
+      "가시거리 전파 — VLF·LF",
+      "우주공간 전파 — MF"
+    ],
+    "correct": 0,
+    "explain": "교안 표의 대응은 **지표면 VLF·LF / 대류권 MF / 전리층 HF / 가시거리 VHF·UHF / 우주공간 SHF·EHF**이다.",
+    "trap": "이 문제는 교안 표의 분류를 묻는다. 외부의 다른 분류 체계를 섞지 않는다.",
+    "kind": "개념",
+    "predictionPage": 17,
+    "evidence": "교안 표",
+    "source": "교안 표 | L5 p.15"
+  },
+  {
+    "id": "6-01",
+    "chapter": 6,
+    "tier": "core",
+    "title": "NRZ-L·NRZ-I",
+    "stem": "비트열 01110101을 부호화한다. NRZ-I 직전 전압은 +V이다. 교안 규칙의 NRZ-L / NRZ-I 전압열은?\n각 +, −는 한 비트 구간 전체의 전압이다.",
+    "options": [
+      "NRZ-L: + − − − + − + − / NRZ-I: + − + − − + + −",
+      "NRZ-L: − + + + − + − + / NRZ-I: + − + − − + + −",
+      "NRZ-L: + − − − + − + − / NRZ-I: + + − + + − − +",
+      "NRZ-L: + − + − − + + − / NRZ-I: + − − − + − + −",
+      "NRZ-L: + − − − + − + − / NRZ-I: − + − + + − − +"
+    ],
+    "correct": 0,
+    "explain": "교안의 **NRZ-L: 0=+V, 1=−V**이다. **NRZ-I: 1에서 전이, 0에서 유지**이다. 직전 전압 +V에서 NRZ-I 전압열은 **+ − + − − + + −**이다.",
+    "trap": "NRZ-L의 0/1 극성은 교안 기준이다. NRZ-I는 “직전 전압”을 먼저 확인한다.",
+    "kind": "파형",
+    "predictionPage": 18,
+    "evidence": "중간 기출 연계",
+    "source": "중간 기출 연계 | L5 p.24–25; M22 문항 4; H1 파형; 초기 조건 명시",
+    "answerFigures": [
+      {
+        "label": "NRZ-L",
+        "seq": "++|--|--|--|++|--|++|--"
+      },
+      {
+        "label": "NRZ-I · 직전 +V",
+        "seq": "++|--|++|--|--|++|++|--"
+      }
+    ]
+  },
+  {
+    "id": "6-02",
+    "chapter": 6,
+    "tier": "core",
+    "title": "RZ 파형",
+    "stem": "비트열 01110101을 교안의 RZ 규칙으로 부호화한 파형은?\n0은 −V→0, 1은 +V→0이다. 두 기호는 비트의 앞·뒤 절반이다.",
+    "options": [
+      "−0 | +0 | +0 | +0 | −0 | +0 | −0 | +0",
+      "+0 | −0 | −0 | −0 | +0 | −0 | +0 | −0",
+      "0− | 0+ | 0+ | 0+ | 0− | 0+ | 0− | 0+",
+      "−+ | +− | +− | +− | −+ | +− | −+ | +−",
+      "−− | ++ | ++ | ++ | −− | ++ | −− | ++"
+    ],
+    "correct": 0,
+    "explain": "**RZ**는 **0=−V→0**, **1=+V→0**이다. 매 비트 **중간에 0V로 복귀**하며 동기화에 유리하지만 상대적으로 많은 대역폭을 사용한다.",
+    "trap": "복귀점은 −V가 아니라 0V이다. 정답의 모든 뒤 절반이 0인지 확인한다.",
+    "kind": "파형",
+    "predictionPage": 18,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L5 p.26; M22 문항 4",
+    "waves": [
+      "-0|+0|+0|+0|-0|+0|-0|+0",
+      "+0|-0|-0|-0|+0|-0|+0|-0",
+      "0-|0+|0+|0+|0-|0+|0-|0+",
+      "-+|+-|+-|+-|-+|+-|-+|+-",
+      "--|++|++|++|--|++|--|++"
+    ]
+  },
+  {
+    "id": "6-03",
+    "chapter": 6,
+    "tier": "core",
+    "title": "Manchester 파형",
+    "stem": "비트열 01110101의 Manchester 파형은?\n교안 규칙: 0은 +V→−V, 1은 −V→+V이다.",
+    "options": [
+      "+− | −+ | −+ | −+ | +− | −+ | +− | −+",
+      "−+ | +− | +− | +− | −+ | +− | −+ | +−",
+      "+− | −+ | +− | −+ | −+ | +− | +− | −+",
+      "−0 | +0 | +0 | +0 | −0 | +0 | −0 | +0",
+      "++ | −− | −− | −− | ++ | −− | ++ | −−"
+    ],
+    "correct": 0,
+    "explain": "**Manchester**는 교안에서 **0=+−, 1=−+**이다. 각 비트의 값에 대응하는 패턴을 놓으면 **+− | −+ | −+ | −+ | +− | −+ | +− | −+**이다.",
+    "trap": "모든 비트 중간에 전이가 있다. 다른 교재의 극성 배정과 바꾸지 않는다.",
+    "kind": "파형",
+    "predictionPage": 18,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L5 p.27; M22 문항 4의 Biphase",
+    "waves": [
+      "+-|-+|-+|-+|+-|-+|+-|-+",
+      "-+|+-|+-|+-|-+|+-|-+|+-",
+      "+-|-+|+-|-+|-+|+-|+-|-+",
+      "-0|+0|+0|+0|-0|+0|-0|+0",
+      "++|--|--|--|++|--|++|--"
+    ]
+  },
+  {
+    "id": "6-04",
+    "chapter": 6,
+    "tier": "core",
+    "title": "차동 Manchester 파형",
+    "stem": "01110101을 차동 Manchester로 부호화한다. 직전 비트 패턴은 +V→−V이다.\n교안 규칙: 0이면 이전 패턴 유지, 1이면 패턴 반전. 옳은 파형은?",
+    "options": [
+      "+− | −+ | +− | −+ | −+ | +− | +− | −+",
+      "+− | −+ | −+ | −+ | +− | −+ | +− | −+",
+      "−+ | +− | −+ | +− | +− | −+ | −+ | +−",
+      "−+ | −+ | −+ | −+ | +− | +− | −+ | −+",
+      "++ | −− | ++ | −− | −− | ++ | ++ | −−"
+    ],
+    "correct": 0,
+    "explain": "**0=직전 두 반구간 패턴 유지**, **1=직전 패턴 반전**이다. +−에서 시작해 **+− | −+ | +− | −+ | −+ | +− | +− | −+**이 된다.",
+    "trap": "이전 “전압 하나”가 아니라 이전 “한 비트의 패턴”을 비교한다.",
+    "kind": "파형",
+    "predictionPage": 18,
+    "evidence": "중간 기출",
+    "source": "중간 기출 | L5 p.28–29; M22 문항 4; 직전 패턴은 연습용 조건",
+    "waves": [
+      "+-|-+|+-|-+|-+|+-|+-|-+",
+      "+-|-+|-+|-+|+-|-+|+-|-+",
+      "-+|+-|-+|+-|+-|-+|-+|+-",
+      "-+|-+|-+|-+|+-|+-|-+|-+",
+      "++|--|++|--|--|++|++|--"
+    ]
+  },
+  {
+    "id": "6-05",
+    "chapter": 6,
+    "tier": "core",
+    "title": "AMI와 스크램블링",
+    "stem": "AMI 부호화와 B8ZS·HDB3의 목적을 올바르게 설명한 것은?",
+    "options": [
+      "AMI는 0을 0V, 1을 +V·−V 교대로 표현하며, 연속 0의 동기화 문제를 B8ZS·HDB3로 보완한다.",
+      "AMI는 0을 언제나 +V, 1을 언제나 −V로 표현하고 교대하지 않는다.",
+      "AMI는 연속된 0에서도 반드시 매 비트 중간에 전이가 발생한다.",
+      "B8ZS와 HDB3는 디지털 신호의 송신지 IP 주소를 찾는 방식이다.",
+      "B8ZS는 연속 4개 0, HDB3는 연속 8개 0을 바꾸는 방식이다."
+    ],
+    "correct": 0,
+    "explain": "**AMI: 0=0V, 1=+V·−V 교대**이다. 연속 0의 동기화 문제를 **B8ZS(8개 0)**, **HDB3(4개 0)**의 패턴 대체로 보완한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 18,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.30–32; 파형 비교 p.22",
+    "answerFigures": [
+      {
+        "label": "AMI · 첫 1은 +V · 01110101",
+        "seq": "00|++|--|++|00|--|00|++"
+      }
+    ]
+  },
+  {
+    "id": "6-06",
+    "chapter": 6,
+    "tier": "core",
+    "title": "ASK·FSK·PSK·QAM",
+    "stem": "변조 방식과 변화시키는 신호 요소를 올바르게 연결한 것은?",
+    "options": [
+      "ASK: 진폭 / FSK: 주파수 / PSK: 위상 / QAM: 진폭과 위상",
+      "ASK: 주파수 / FSK: 진폭 / PSK: 위상 / QAM: 진폭과 위상",
+      "ASK: 진폭 / FSK: 위상 / PSK: 주파수 / QAM: 진폭과 위상",
+      "ASK: 위상 / FSK: 주파수 / PSK: 진폭 / QAM: 주파수와 위상",
+      "ASK: 진폭 / FSK: 주파수 / PSK: 위상 / QAM: 주파수만"
+    ],
+    "correct": 0,
+    "explain": "**ASK=진폭**, **FSK=주파수**, **PSK=위상**, **QAM=진폭+위상**이다. 디지털 정보를 아날로그 신호로 보낼 때 쓰는 방식이다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 19,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.38–45"
+  },
+  {
+    "id": "6-07",
+    "chapter": 6,
+    "tier": "core",
+    "title": "PSK와 비트율",
+    "stem": "8-PSK로 초당 2,400심볼(2,400baud)을 보낸다. 심볼당 비트 수와 비트율은?",
+    "options": [
+      "3비트 / 7,200bps",
+      "8비트 / 19,200bps",
+      "2비트 / 4,800bps",
+      "1비트 / 2,400bps",
+      "3비트 / 800bps"
+    ],
+    "correct": 0,
+    "explain": "교안의 **8-PSK=3비트/심볼**이다. **2,400×3=7,200bps**이다. 비교하면 **4-PSK=2비트/심볼**이다.",
+    "trap": "8개의 위상을 쓴다는 것은 심볼당 8비트라는 뜻이 아니다.",
+    "kind": "계산",
+    "predictionPage": 19,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.40–43, 46; 2,400baud는 연습용 조건"
+  },
+  {
+    "id": "6-08",
+    "chapter": 6,
+    "tier": "core",
+    "title": "PCM과 표본화",
+    "stem": "PCM 변환 순서와 최고 주파수 4kHz에 대응하는 교안의 표본화 기준값은?",
+    "options": [
+      "표본화 → 양자화 → 부호화 / 주기 125μs, 표본 주파수 8kHz",
+      "양자화 → 부호화 → 표본화 / 주기 250μs, 표본 주파수 4kHz",
+      "부호화 → 표본화 → 양자화 / 주기 125ms, 표본 주파수 8Hz",
+      "표본화 → 부호화 → 양자화 / 주기 500μs, 표본 주파수 2kHz",
+      "표본화 → 양자화 → 부호화 / 주기 125s, 표본 주파수 8kHz"
+    ],
+    "correct": 0,
+    "explain": "**PCM=표본화 → 양자화 → 부호화**이다. 교안의 기준 **1/(2fc)**에 4kHz를 넣으면 **125μs**, 대응 표본 주파수는 **8kHz**이다.",
+    "trap": "교안 식에 따른 기준값 계산이다. 실제 설계 조건을 별도로 확장한 문항은 아니다.",
+    "kind": "계산",
+    "predictionPage": 19,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.55–58; fc=4kHz는 연습용 조건"
+  },
+  {
+    "id": "6-09",
+    "chapter": 6,
+    "tier": "core",
+    "title": "블록 부호화 길이",
+    "stem": "원래 8비트 데이터를 4B/5B 또는 8B/10B로 변환한다. 두 방식의 출력 길이와 원래 대비 증가율은?",
+    "options": [
+      "두 방식 모두 10비트 / 25% 증가",
+      "두 방식 모두 8비트 / 0% 증가",
+      "4B/5B는 5비트, 8B/10B는 10비트 / 둘 다 20% 증가",
+      "두 방식 모두 16비트 / 50% 증가",
+      "두 방식 모두 10비트 / 20% 증가"
+    ],
+    "correct": 0,
+    "explain": "**4B/5B: 4비트→5비트**, **8B/10B: 8비트→10비트**이다. 원래 8비트는 모두 10비트가 되고 **(10−8)/8=25% 증가**한다.",
+    "trap": "증가율의 분모는 원래 8비트이다. 출력 중 추가 비트 비율 2/10과 다르다.",
+    "kind": "계산",
+    "predictionPage": 19,
+    "evidence": "교안 응용",
+    "source": "교안 응용 | L5 p.33–35; 전송 길이·증가율은 교안 비율로 계산"
+  },
+  {
+    "id": "6-10",
+    "chapter": 6,
+    "tier": "core",
+    "title": "네 가지 변환 체계",
+    "stem": "정보와 출력 신호 종류에 따른 부호화 체계를 올바르게 연결한 것은?",
+    "options": [
+      "디지털→디지털: NRZ / 디지털→아날로그: ASK / 아날로그→디지털: PCM / 아날로그→아날로그: AM",
+      "디지털→디지털: AM / 디지털→아날로그: PCM / 아날로그→디지털: NRZ / 아날로그→아날로그: ASK",
+      "디지털→디지털: PCM / 디지털→아날로그: NRZ / 아날로그→디지털: AM / 아날로그→아날로그: ASK",
+      "디지털→디지털: ASK / 디지털→아날로그: AM / 아날로그→디지털: NRZ / 아날로그→아날로그: PCM",
+      "네 체계는 모두 같은 변환이므로 구분할 필요가 없다."
+    ],
+    "correct": 0,
+    "explain": "**D→D: NRZ·Manchester**, **D→A: ASK·FSK·PSK·QAM**, **A→D: PCM**, **A→A: AM·FM·PM**이다. 입력 정보와 출력 신호를 나눠 읽는다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 19,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.20–21, 38–39, 55, 62–64"
+  },
+  {
+    "id": "6-11",
+    "chapter": 6,
+    "tier": "extra",
+    "title": "단극형의 문제",
+    "stem": "단극형 부호화의 직류 성분 문제와 동기화 문제를 옳게 설명한 것은?",
+    "options": [
+      "평균 진폭이 0이 아니면 직류 성분이 생기고, 같은 값이 계속되어 전이가 없으면 비트 경계 판별이 어렵다.",
+      "평균 진폭이 0이 아닌 신호는 모든 매체를 항상 완벽하게 통과한다.",
+      "0이나 1이 연속될수록 반드시 비트마다 전이가 더 많이 생긴다.",
+      "동기화 문제는 송신지 MAC 주소가 길기 때문에만 발생한다.",
+      "단극형은 직류 성분 문제와 동기화 문제가 절대로 없다."
+    ],
+    "correct": 0,
+    "explain": "**평균 진폭≠0 → 직류 성분**, **긴 무전이 구간 → 비트 경계 판별 어려움**이다. 교안은 각각 **매체 통과 문제·동기화 문제**로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 20,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.22–23"
+  },
+  {
+    "id": "6-12",
+    "chapter": 6,
+    "tier": "extra",
+    "title": "DSU·CSU",
+    "stem": "교안의 DSU·CSU 기능 설명으로 옳은 것은?",
+    "options": [
+      "DSU는 단극 신호와 변형된 양극 신호를 변환하고, CSU는 T1·E1 트렁크를 수용한다.",
+      "DSU는 T1·E1 트렁크 수용만, CSU는 단극·양극 신호 변환만 담당한다.",
+      "DSU는 아날로그 신호의 표본화·양자화만, CSU는 신호의 진폭 변조만 담당한다.",
+      "DSU는 프레임 송신지 MAC 학습만, CSU는 수신지 IP 경로 결정만 담당한다.",
+      "DSU는 전송매체의 차폐 강화, CSU는 주파수 스펙트럼 분해만 담당한다."
+    ],
+    "correct": 0,
+    "explain": "**DSU=단극↔변형 양극 변환**, **CSU=T1·E1 트렁크 수용**이다. 교안은 **T1: 64kbps 24채널**, **E1: 64kbps 30채널**로 설명한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 20,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.36–37"
+  },
+  {
+    "id": "6-13",
+    "chapter": 6,
+    "tier": "extra",
+    "title": "2B1Q",
+    "stem": "2B1Q에 대한 교안의 설명으로 옳은 것은?",
+    "options": [
+      "2비트 조합을 하나의 4진 심볼로 바꾸며 −3·−1·+1·+3의 4레벨을 쓴다.",
+      "1비트 조합을 2개의 4진 심볼로 바꾸며 −1·+1의 2레벨을 쓴다.",
+      "4비트 조합을 하나의 2진 심볼로 바꾸며 −1·+1의 2레벨을 쓴다.",
+      "2비트 조합을 하나의 2진 심볼로 바꾸며 0·1의 2레벨만 쓴다.",
+      "2비트 조합을 4개의 2진 심볼로 바꾸며 −3·+3의 2레벨만 쓴다."
+    ],
+    "correct": 0,
+    "explain": "**2B1Q=2비트→1개의 4진 심볼**이다. 네 비트 조합을 **−3·−1·+1·+3의 4레벨**로 표현하며 교안은 xDSL에 연결한다.",
+    "trap": "",
+    "kind": "개념",
+    "predictionPage": 20,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.35"
+  },
+  {
+    "id": "6-14",
+    "chapter": 6,
+    "tier": "extra",
+    "title": "AM·FM·PM",
+    "stem": "아날로그→아날로그 변조에서 AM·FM·PM이 변화시키는 요소는 순서대로?",
+    "options": [
+      "진폭 / 주파수 / 위상",
+      "위상 / 진폭 / 주파수",
+      "주파수 / 위상 / 진폭",
+      "진폭 / 위상 / 주파수",
+      "주파수 / 진폭 / 위상"
+    ],
+    "correct": 0,
+    "explain": "**AM=진폭**, **FM=주파수**, **PM=위상**을 바꾼다. 이 문항은 **아날로그→아날로그** 변조에 관한 것이다.",
+    "trap": "디지털 비트를 보내는 ASK·FSK·PSK와 입력 정보의 종류를 구분한다.",
+    "kind": "개념",
+    "predictionPage": 20,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.62–65"
+  },
+  {
+    "id": "6-15",
+    "chapter": 6,
+    "tier": "extra",
+    "title": "DMT·CAP",
+    "stem": "교안의 DSL 변조 방식인 DMT와 CAP 설명으로 옳은 것은?",
+    "options": [
+      "DMT는 4kHz 톤으로 나눠 각 톤에 QAM을 쓰고, CAP은 두 기저대역의 I·Q 신호를 변조·합성한다.",
+      "DMT는 4kHz 톤마다 PSK만 쓰고, CAP은 한 신호의 진폭만 바꿔 전송한다.",
+      "DMT는 두 기저대역의 I·Q를 합하고, CAP은 4kHz 톤별 QAM을 사용한다.",
+      "DMT는 대역을 분할하지 않고, CAP은 I·Q 성분을 합치지 않은 채 버린다.",
+      "DMT는 신호를 표본화·양자화하고, CAP은 8비트를 10비트로 바꾸는 방식이다."
+    ],
+    "correct": 0,
+    "explain": "**DMT=4kHz 톤 분할·각 톤 QAM**, **CAP=두 기저대역·In-phase/Quadrature-phase 변조 후 합성**이다.",
+    "trap": "톤 크기는 교안에 제시된 4kHz를 사용했다.",
+    "kind": "개념",
+    "predictionPage": 20,
+    "evidence": "교안 핵심",
+    "source": "교안 핵심 | L5 p.53–54"
+  }
+]</script>
+<script>
+'use strict';
+/* NET QUEST — one-file, offline quiz engine.
+   Content: 90 source-mapped questions; correct stores ORIGINAL option index.
+   Display order is shuffled independently, so grading never uses display position.
+   No dependencies, remote requests, login, analytics, or font downloads. */
+const BANK_VERSION='network-midterm-90-v1';
+const STORE_KEY='netquest.midterm.v1';
+const CHAPTERS=[{id:1,name:'데이터통신과 네트워크 개요',short:'네트워크 개요',file:'1번 PDF 전체'}, {id:2,name:'네트워크의 구성',short:'네트워크 구성',file:'2번 PDF 전체'}, {id:3,name:'네트워크 통신',short:'네트워크 통신',file:'3번 PDF 전체'}, {id:4,name:'네트워크 모델',short:'네트워크 모델',file:'4번 PDF 전체'}, {id:5,name:'신호',short:'신호',file:'5번 PDF p.1–19'}, {id:6,name:'부호화',short:'부호화',file:'5번 PDF p.20–66'}];
+const MODE_NAMES={learn:'학습 모드',exam:'실전 모드',review:'오답 재도전'};
+const $=id=>document.getElementById(id);
+const escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rich=s=>escapeHTML(s).replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+let BANK=[],BY_ID=new Map(),db,session=null,view='home',mode='learn',persistOK=true,soundOn=false,audioCtx=null,lastTick=0,toastTimer=null,modalReturnFocus=null;
+const freshDB=()=>({version:1,bankVersion:BANK_VERSION,totalXP:0,bestStreak:0,records:{},stars:[],history:[],savedSession:null});
+function shuffle(items){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function nonnegative(n,max=1e9){return Number.isFinite(n)&&n>=0&&n<=max;}
+function validateBank(){
+ if(BANK.length!==90)throw new Error('문제 수가 90개가 아닙니다.');
+ const ids=new Set();for(const q of BANK){if(ids.has(q.id)||q.options.length!==5||new Set(q.options).size!==5||q.correct<0||q.correct>=5||!q.source||!q.explain)throw new Error('문제 데이터 오류: '+q.id);ids.add(q.id);}
+ for(const c of CHAPTERS){if(BANK.filter(q=>q.chapter===c.id).length!==15)throw new Error('챕터별 문항 수 오류');}
+}
+function validSession(s){
+ if(!s||s.bankVersion!==BANK_VERSION||!MODE_NAMES[s.mode]||!Array.isArray(s.items)||s.items.length<1||s.items.length>90)return false;
+ if(!Number.isInteger(s.index)||s.index<0||s.index>=s.items.length||!Number.isInteger(s.maxVisited)||s.maxVisited<s.index||s.maxVisited>=s.items.length)return false;
+ if(!nonnegative(s.xpEarned)||!nonnegative(s.streak,90)||!nonnegative(s.maxStreak,90)||!nonnegative(s.elapsedMs,1e13)||!Number.isFinite(s.startedAt))return false;
+ if(s.deadline!==null&&!Number.isFinite(s.deadline))return false;
+ if(typeof s.note!=='string'||s.note.length>20000)return false;
+ const seen=new Set();
+ for(const it of s.items){if(!BY_ID.has(it.id)||seen.has(it.id)||!Array.isArray(it.order)||it.order.length!==5||it.order.slice().sort().join(',')!=='0,1,2,3,4')return false;seen.add(it.id);if(it.choice!==null&&(!Number.isInteger(it.choice)||it.choice<0||it.choice>4))return false;if(typeof it.graded!=='boolean'||typeof it.skipped!=='boolean'||!nonnegative(it.award,20))return false;}
+ return !s.finished;
+}
+function sanitizeDB(raw,strict=false){
+ if(!raw||raw.version!==1||raw.bankVersion!==BANK_VERSION)throw new Error('이 게임 버전의 기록 파일이 아닙니다.');
+ const out=freshDB();out.totalXP=nonnegative(raw.totalXP)?Math.floor(raw.totalXP):0;out.bestStreak=nonnegative(raw.bestStreak,90)?Math.floor(raw.bestStreak):0;
+ if(raw.records&&typeof raw.records==='object'){for(const q of BANK){const r=raw.records[q.id];if(r&&Number.isInteger(r.attempts)&&r.attempts>=1&&r.attempts<=1e7&&Number.isInteger(r.correct)&&r.correct>=0&&r.correct<=r.attempts&&typeof r.lastCorrect==='boolean'){out.records[q.id]={attempts:r.attempts,correct:r.correct,lastCorrect:r.lastCorrect,updatedAt:Number.isFinite(r.updatedAt)?r.updatedAt:0};}}}
+ out.stars=Array.isArray(raw.stars)?[...new Set(raw.stars.filter(id=>BY_ID.has(id)))]:[];
+ out.history=Array.isArray(raw.history)?raw.history.filter(h=>h&&MODE_NAMES[h.mode]&&Number.isInteger(h.count)&&h.count>0&&h.count<=90&&Number.isInteger(h.correct)&&h.correct>=0&&h.correct<=h.count&&Number.isFinite(h.date)).slice(-20).map(h=>({mode:h.mode,count:h.count,correct:h.correct,date:h.date})):[];
+ if(raw.savedSession){if(validSession(raw.savedSession)){out.savedSession=JSON.parse(JSON.stringify(raw.savedSession));}else if(strict){throw new Error('진행 중 라운드 데이터가 손상되어 가져올 수 없습니다.');}}
+ return out;
+}
+function loadDB(){try{const raw=localStorage.getItem(STORE_KEY);if(!raw)return freshDB();return sanitizeDB(JSON.parse(raw));}catch(e){persistOK=false;$('storageWarning').hidden=false;return freshDB();}}
+function saveDB(){try{localStorage.setItem(STORE_KEY,JSON.stringify(db));if(!persistOK){persistOK=true;$('storageWarning').hidden=true;}}catch(e){persistOK=false;$('storageWarning').hidden=false;}}
+function persistSession(){if(session&&!session.finished){db.savedSession=session;}saveDB();}
+function toast(text){$('toast').textContent=text;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,3200);}
+function announce(text){$('announcer').textContent=text;}
+function formatTime(ms){const sec=Math.max(0,Math.floor(ms/1000));return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+function selectedChapters(){return mode==='exam'?[1,2,3,4,5,6]:[...document.querySelectorAll('#chapterSelect input:checked')].map(el=>Number(el.value));}
+function unresolvedIds(){return BANK.filter(q=>db.records[q.id]&&!db.records[q.id].lastCorrect).map(q=>q.id);}
+function getPool(){const selected=selectedChapters(),tier=$('tierSelect').value;return BANK.filter(q=>selected.includes(q.chapter)&&(tier==='all'||q.tier===tier)&&(mode!=='review'||(db.records[q.id]&&!db.records[q.id].lastCorrect)));}
+function targetCount(pool){const v=$('countSelect').value;return Math.min(pool.length,v==='all'?pool.length:Number(v));}
+function balancedPick(pool,n){
+ const buckets=new Map();for(const q of shuffle(pool)){if(!buckets.has(q.chapter))buckets.set(q.chapter,[]);buckets.get(q.chapter).push(q);}
+ const picked=[];while(picked.length<n){let any=false;for(const ch of shuffle([...buckets.keys()])){const bucket=buckets.get(ch);if(bucket.length&&picked.length<n){picked.push(bucket.pop());any=true;}}if(!any)break;}
+ return shuffle(picked);
+}
+function renderHome(){
+ const records=Object.values(db.records);const attempts=records.reduce((sum,r)=>sum+r.attempts,0),correct=records.reduce((sum,r)=>sum+r.correct,0);
+ const lvl=Math.floor(db.totalXP/150)+1;const titles=['새로운 네트워커','패킷 탐험가','링크 설계자','프로토콜 분석가','네트워크 연구자'];
+ $('levelName').textContent=titles[Math.min(Math.floor((lvl-1)/3),titles.length-1)];$('levelNumber').textContent='LEVEL '+lvl;$('totalXP').textContent=db.totalXP.toLocaleString()+' XP';$('xpBar').style.width=(db.totalXP%150)/150*100+'%';$('nextLevel').textContent='다음 레벨까지 '+(150-db.totalXP%150)+' XP';
+ $('uniqueCount').textContent=records.length;$('overallAccuracy').textContent=attempts?Math.round(correct/attempts*100)+'%':'—';$('wrongCount').textContent=unresolvedIds().length;
+ $('masteryRows').innerHTML=CHAPTERS.map(c=>{const passed=BANK.filter(q=>q.chapter===c.id&&db.records[q.id]?.lastCorrect).length;return `<div class="chapter-progress"><div class="row"><span>${String(c.id).padStart(2,'0')} ${escapeHTML(c.short)}</span><span>${passed} / 15</span></div><div class="track"><i style="width:${passed/15*100}%"></i></div></div>`;}).join('');
+ $('bookmarkStudyBtn').textContent='북마크 학습 · '+db.stars.length;
+ $('historyArea').innerHTML='<div class="side-heading"><strong>최근 완료 라운드</strong></div>'+(db.history.length?db.history.slice(-3).reverse().map(h=>`<div class="history-row"><span>${new Date(h.date).toLocaleDateString('ko-KR',{month:'numeric',day:'numeric'})} · ${MODE_NAMES[h.mode]}</span><strong>${h.correct}/${h.count} · ${Math.round(h.correct/h.count*100)}점</strong></div>`).join(''):'<p class="small muted" style="font-size:11px">첫 라운드를 시작해 보세요.</p>');
+ $('resumeCard').hidden=!db.savedSession;if(db.savedSession){const s=db.savedSession;const done=s.mode==='exam'?s.items.filter(it=>it.choice!==null).length:s.items.filter(it=>it.graded).length;$('resumeInfo').textContent=MODE_NAMES[s.mode]+' · '+done+'/'+s.items.length+'문항'+(s.deadline?' · 저장 중에도 제한시간 진행':'');}
+ updateSetup();
+}
+function updateSetup(){
+ document.querySelectorAll('[data-mode]').forEach(el=>{const active=el.dataset.mode===mode;el.classList.toggle('active',active);el.setAttribute('aria-pressed',String(active));});
+ document.querySelectorAll('#chapterSelect input').forEach(el=>el.disabled=mode==='exam');$('allChaptersBtn').disabled=mode==='exam';$('timerSelect').disabled=mode!=='exam';
+ $('modeDesc').textContent=mode==='learn'?'내 속도로 학습합니다. 정답을 확인하면 핵심 해설과 출처가 바로 나타납니다.':mode==='exam'?'모든 학습 챕터에서 출제합니다. 제출 전까지 답을 바꿀 수 있고, 정답·해설은 제출 후에만 공개됩니다.':'가장 최근 시도에서 틀렸거나 건너뛴 문항만 출제합니다. 맞히면 남은 오답에서 제외됩니다.';
+ const pool=getPool(),n=targetCount(pool),chapters=[...new Set(pool.map(q=>q.chapter))];
+ const summary=$('poolSummary');summary.classList.toggle('warning',n===0);$('startBtn').disabled=n===0;
+ if(!n){summary.innerHTML='<span aria-hidden="true">!</span><div><strong>'+(selectedChapters().length===0?'학습할 챕터를 선택해 주세요.':mode==='review'?'이 범위에 남은 오답이 없습니다.':'선택 범위에 문제가 없습니다.')+'</strong><small>'+(mode==='review'?'학습 범위를 바꾸거나 학습 모드에서 새 문제를 풀어보세요.':'챕터와 문제 범위를 확인하세요.')+'</small></div>';}
+ else {const low=Math.floor(n/chapters.length),high=Math.ceil(n/chapters.length);const equalCap=chapters.every(ch=>pool.filter(q=>q.chapter===ch).length>=low);const dist=equalCap&&low===high?'각 챕터 '+low+'문항':equalCap?'각 챕터 약 '+low+'~'+high+'문항':'챕터별 남은 문제 수에 맞춰 균형 배분';summary.innerHTML=`<span aria-hidden="true">✓</span><div><strong>이번 라운드 ${n}문항 · ${chapters.length}개 챕터</strong><small>선택 범위 ${pool.length}문항 중 출제 · ${dist}<br>문제·보기 순서 무작위${mode==='exam'&&$('timerSelect').value!=='0'?' · 제한시간은 저장·종료 후에도 계속 진행':''}</small></div>`;}
+}
+function setMode(newMode){mode=newMode;if(mode==='exam')document.querySelectorAll('#chapterSelect input').forEach(el=>el.checked=true);updateSetup();}
+function changeView(name){view=name;$('homeView').hidden=name!=='home';$('playView').hidden=name!=='play';$('resultView').hidden=name!=='result';window.scrollTo({top:0,behavior:'auto'});}
+function openModal(title,body,buttons=[]){
+ modalReturnFocus=document.activeElement;$('modalTitle').textContent=title;$('modalBody').innerHTML=body;$('modalFoot').innerHTML='';
+ for(const b of buttons){const button=document.createElement('button');button.type='button';button.className=b.className||'secondary';button.textContent=b.label;button.addEventListener('click',()=>{closeModal();b.action?.();});$('modalFoot').append(button);}
+ if(!$('modal').open)$('modal').showModal();
+}
+function closeModal(){if($('modal').open)$('modal').close();if(modalReturnFocus?.isConnected)modalReturnFocus.focus({preventScroll:true});}
+function askReplace(action){if(db.savedSession){openModal('진행 중 라운드를 새로 시작할까요?','<p>저장된 라운드는 새 라운드로 바뀝니다. 이미 채점된 학습 기록과 북마크는 유지됩니다.</p>',[{label:'취소'},{label:'새 라운드 시작',className:'primary',action}]);}else action();}
+function startRound(customIds=null,customLabel=''){
+ let picked,chosenMode=mode;
+ if(customIds){const unique=[...new Set(customIds)].filter(id=>BY_ID.has(id));picked=shuffle(unique.map(id=>BY_ID.get(id)));chosenMode='learn';}else {const pool=getPool();picked=balancedPick(pool,targetCount(pool));}
+ if(!picked.length){toast('선택한 범위에 출제할 문제가 없습니다.');return;}
+ if(chosenMode==='exam'&&new Set(picked.map(q=>q.chapter)).size!==6){toast('실전은 모든 챕터를 포함해야 합니다. 범위를 다시 확인하세요.');return;}
+ const now=Date.now(),minutes=chosenMode==='exam'?Number($('timerSelect').value):0;
+ session={bankVersion:BANK_VERSION,mode:chosenMode,label:customLabel,startedAt:now,deadline:minutes?now+minutes*60000:null,elapsedMs:0,index:0,maxVisited:0,items:picked.map(q=>({id:q.id,order:shuffle([0,1,2,3,4]),choice:null,graded:false,skipped:false,award:0})),xpEarned:0,streak:0,maxStreak:0,note:'',finished:false};
+ lastTick=now;persistSession();changeView('play');renderPlay(true);announce('라운드를 시작합니다. '+picked.length+'문항입니다.');
+}
+function resumeRound(){if(!db.savedSession||!validSession(db.savedSession)){toast('이어할 라운드가 없습니다.');return;}session=db.savedSession;lastTick=Date.now();changeView('play');if(session.deadline&&Date.now()>=session.deadline){finishRound('timeout');return;}renderPlay(true);announce('저장한 라운드를 이어합니다.');}
+function syncElapsed(){const now=Date.now();if(view==='play'&&session&&!session.finished){session.elapsedMs+=Math.max(0,now-lastTick);}lastTick=now;}
+function saveAndHome(){if(view==='play'&&session&&!session.finished){syncElapsed();persistSession();}changeView('home');renderHome();}
+function waveSVG(seq,label='',showBits=true){
+ const parts=seq.split('|');const W=620,H=90,left=34,right=14,unit=(W-left-right)/parts.length;
+ const y=v=>v==='+'?20:v==='-'?62:41;let path='',prev=null;for(let i=0;i<parts.length;i++){for(let k=0;k<parts[i].length;k++){const val=parts[i][k],xx=left+i*unit+k*unit/parts[i].length,yy=y(val);if(prev===null)path+=`M${xx} ${yy}`;else path+=`L${xx} ${yy}`;path+=`L${xx+unit/parts[i].length} ${yy}`;prev=yy;}}
+ const lines=Array.from({length:parts.length+1},(_,i)=>`<line x1="${left+i*unit}" y1="12" x2="${left+i*unit}" y2="69" stroke="#ccd7e3" stroke-dasharray="3 3"/>`).join('');
+ const bits='01110101';const bitText=showBits?parts.map((_,i)=>`<text x="${left+(i+.5)*unit}" y="83" text-anchor="middle" class="wave-text">${bits[i]||''}</text>`).join(''):'';
+ return `<svg class="wave-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHTML(label+' 전압열 '+seq.replaceAll('|',' / '))}"><line x1="${left}" y1="41" x2="${W-right}" y2="41" stroke="#b9c7d5"/>${lines}<text x="4" y="23" class="wave-text">+V</text><text x="10" y="44" class="wave-text">0</text><text x="5" y="65" class="wave-text">−V</text><path d="${path}" fill="none" stroke="#28639b" stroke-width="2.3" stroke-linejoin="round"/>${bitText}</svg>`;
+}
+function questionWidget(q){
+ if(q.widget==='switch')return '<svg viewBox="0 0 620 145" role="img" aria-label="빈 MAC 테이블의 스위치. A 포트1, C 포트2, B 포트3, D 포트4 연결."><rect x="135" y="8" width="350" height="45" rx="10" fill="#eef4fc" stroke="#aac1dc"/><text x="310" y="35" text-anchor="middle" fill="#2a4f77" font-size="13" font-weight="700">스위치 · MAC 테이블 비어 있음</text>'+['A','C','B','D'].map((n,i)=>{const x=185+i*84;return `<line x1="${x}" y1="53" x2="${x}" y2="94" stroke="#90a8c1"/><text x="${x+6}" y="74" fill="#637992" font-size="10">포트${i+1}</text><rect x="${x-22}" y="94" width="44" height="32" rx="7" fill="${n==='A'||n==='B'?'#e6f5f0':'#f6f8fb'}" stroke="#acc2d4"/><text x="${x}" y="115" text-anchor="middle" fill="#2a5c6c" font-size="14" font-weight="700">${n}</text>`;}).join('')+'</svg>';
+ if(q.widget==='phase'){let path='';for(let i=0;i<=200;i++){const x=48+i*2.6,y=74-42*Math.cos(i/200*2*Math.PI);path+=(i?'L':'M')+x.toFixed(2)+' '+y.toFixed(2);}return `<svg viewBox="0 0 620 150" role="img" aria-label="시각 0에 양의 최대값에서 시작하는 정현파"><line x1="48" y1="16" x2="48" y2="130" stroke="#8598ae"/><line x1="38" y1="74" x2="589" y2="74" stroke="#8598ae"/><path d="${path}" fill="none" stroke="#28639b" stroke-width="2.5"/><circle cx="48" cy="32" r="4" fill="#087d72"/><text x="38" y="145" font-size="11" fill="#63728a">t=0</text><text x="575" y="93" font-size="11" fill="#63728a">시간</text><text x="8" y="22" font-size="11" fill="#63728a">진폭</text></svg>`;}
+ if(q.widget==='crc')return '<div class="notice" style="background:#f4f7fb;color:#50657c;margin:0">연습 메모: 생성 다항식의 길이 − 1 = FCS 길이. 종이에 XOR 나눗셈을 한 뒤 보기를 선택하세요.</div>';
+ return '';
+}
+function sourceHTML(q){return `<div class="source"><b>복습 위치</b> 예상문제집 ${escapeHTML(q.id)} · ${q.predictionPage}쪽<br><b>근거</b> ${escapeHTML(q.source)}</div>`;}
+function figureAnswers(q){return (q.answerFigures||[]).map(f=>`<div class="figure-answer"><b>${escapeHTML(f.label)}</b>${waveSVG(f.seq,f.label)}</div>`).join('');}
+function renderPlay(focus=false){
+ if(!session||session.finished)return;const it=session.items[session.index],q=BY_ID.get(it.id),exam=session.mode==='exam',locked=!exam&&it.graded;
+ $('playTitle').textContent=session.label||MODE_NAMES[session.mode];$('playSubtitle').textContent=exam?'EXAM ROUND · 제출 전 정답 비공개':'LEARNING ROUND · 개념을 확인하며 진행';$('examSubmitBtn').hidden=!exam;
+ $('qBadges').innerHTML=`<span class="badge chapter">CH.${q.chapter} ${escapeHTML(CHAPTERS[q.chapter-1].short)}</span><span class="badge ${q.tier}">${q.tier==='core'?'핵심':'추가'} ${escapeHTML(q.id)}</span><span class="badge">${escapeHTML(q.kind)}</span>`;
+ $('qStem').textContent=q.stem;$('bookmarkBtn').classList.toggle('on',db.stars.includes(q.id));$('bookmarkBtn').setAttribute('aria-pressed',String(db.stars.includes(q.id)));$('bookmarkBtn').textContent=db.stars.includes(q.id)?'★ 다시 보기':'☆ 다시 보기';
+ const widget=questionWidget(q);$('qFigure').hidden=!widget;$('qFigure').innerHTML=widget;
+ $('options').innerHTML=it.order.map((orig,i)=>{
+  let cls='choice'+(q.waves?' wave-choice':'');if(orig===it.choice)cls+=' selected';if(locked&&orig===q.correct)cls+=' right';if(locked&&orig===it.choice&&orig!==q.correct)cls+=' wrong';
+  const state=locked?(orig===q.correct?'정답':orig===it.choice?'내 선택':''):'';
+  return `<button type="button" id="choice-${i}" class="${cls}" data-option="${orig}" aria-label="보기 ${i+1}. ${escapeHTML(q.options[orig])}" aria-pressed="${it.choice===orig}" ${locked?'disabled':''}><span class="number" aria-hidden="true">${i+1}</span><span class="option-copy"><span>${escapeHTML(q.options[orig])}</span>${q.waves?waveSVG(q.waves[orig],'보기 '+(i+1)):''}</span>${state?`<span class="label-state">${state}</span>`:''}</button>`;
+ }).join('');
+ $('feedback').hidden=!locked;if(locked){const ok=it.choice===q.correct;$('feedback').innerHTML=`<div class="feedback ${ok?'':'wrong'}"><div class="feedback-heading" tabindex="-1" id="feedbackHeading"><span>${ok?'✓ 정답입니다.':it.skipped?'↻ 건너뛴 문제를 확인하세요.':'↻ 한 번 더 기억해 두세요.'}</span><span class="xp-award">${ok?'+'+it.award+' XP':'오답노트에 저장'}</span></div><div class="explanation">${rich(q.explain)}</div>${figureAnswers(q)}${q.trap?`<p class="trap"><strong>혼동 주의</strong> ${escapeHTML(q.trap)}</p>`:''}${sourceHTML(q)}</div>`;}else $('feedback').innerHTML='';
+ $('examSaved').hidden=!exam;$('examSaved').textContent=exam?(it.choice===null?'아직 답을 선택하지 않았습니다. 미응답으로 이동할 수 있습니다.':'답안이 저장되었습니다. 제출 전까지 선택을 바꿀 수 있습니다.') :'';
+ $('prevBtn').disabled=session.index===0;$('skipBtn').hidden=locked;$('skipBtn').textContent=exam?'선택 지우기':'모르겠어요';$('skipBtn').disabled=exam&&it.choice===null;
+ $('mainActionBtn').textContent=exam?(session.index===session.items.length-1?'답안 제출':'다음 문제 →'):locked?(session.index===session.items.length-1?'결과 보기':'다음 문제 →'):'정답 확인';$('mainActionBtn').disabled=!exam&&!locked&&it.choice===null;
+ if($('scratchpad').value!==session.note)$('scratchpad').value=session.note;
+ renderRoundStats();renderNavigator();renderClock();
+ if(focus){$('qStem').focus({preventScroll:true});window.scrollTo({top:0,behavior:'auto'});}
+}
+function renderRoundStats(){const exam=session.mode==='exam';$('roundCountValue').innerHTML=(session.index+1)+' <small>/ '+session.items.length+'</small>';$('roundScoreLabel').textContent=exam?'답안 선택':'이번 라운드 XP';$('roundScoreValue').textContent=exam?session.items.filter(it=>it.choice!==null).length+' / '+session.items.length:session.xpEarned;$('roundStreakLabel').textContent=exam?'아직 미응답':'연속 정답';$('roundStreakValue').textContent=exam?session.items.filter(it=>it.choice===null).length:session.streak;}
+function renderNavigator(){const exam=session.mode==='exam',done=session.items.filter(it=>exam?it.choice!==null:it.graded).length;$('navSummary').textContent=done+'/'+session.items.length+(exam?'문항 답안 선택':'문항 채점 완료');
+ $('navGrid').innerHTML=session.items.map((it,i)=>{let cls='nav-q';if(i===session.index)cls+=' current';if(exam&&it.choice!==null)cls+=' responded';if(!exam&&it.graded)cls+=it.choice===BY_ID.get(it.id).correct?' correct':' incorrect';if(db.stars.includes(it.id))cls+=' flagged';const state=exam?(it.choice!==null?'응답':'미응답'):it.graded?(it.choice===BY_ID.get(it.id).correct?'정답':'오답'):'미풀이';return `<button class="${cls}" data-nav="${i}" ${!exam&&i>session.maxVisited?'disabled':''} aria-label="${i+1}번 ${escapeHTML(it.id)} ${state}${db.stars.includes(it.id)?' 북마크':''}" ${i===session.index?'aria-current="step"':''}>${i+1}</button>`;}).join('');
+ const grid=$('navGrid'),active=grid.querySelector('.current');if(active){const a=active.getBoundingClientRect(),g=grid.getBoundingClientRect();if(a.top<g.top)grid.scrollTop-=g.top-a.top+4;else if(a.bottom>g.bottom)grid.scrollTop+=a.bottom-g.bottom+4;}
+ $('navLegend').innerHTML=exam?'<span><i class="legend-dot" style="background:#2464dc"></i>답안 선택</span><span><i class="legend-dot" style="background:#d59b2c"></i>북마크</span>':'<span><i class="legend-dot" style="background:#087d72"></i>정답</span><span><i class="legend-dot" style="background:#b34248"></i>오답·건너뜀</span><span><i class="legend-dot" style="background:#d59b2c"></i>북마크</span>';
+ $('navTip').innerHTML=exam?'<strong>모든 챕터를 확인하세요.</strong><br>정답은 제출 후 공개됩니다. 지도에서 문항을 이동해 답을 바꿀 수 있습니다.'+(session.deadline?'<br><strong>제한시간은 저장 후에도 진행</strong>되며, 만료 시 미응답을 포함해 제출됩니다.':''):'<strong>정답 10 XP + 연속 보너스</strong><br>2연속부터 2 XP씩 추가되어 최대 20 XP를 얻습니다. 오답 뒤에는 연속 보너스가 초기화됩니다.';
+}
+function renderClock(){if(!session)return;const limited=!!session.deadline;const ms=limited?Math.max(0,session.deadline-Date.now()):session.elapsedMs;$('clockLabel').textContent=limited?'남은 시간':'진행 시간';$('clockValue').textContent=formatTime(limited?ms+999:ms);$('timerCard').classList.toggle('timer-alert',limited&&ms<60000);}
+function selectOption(original){if(!session||session.finished)return;if(session.deadline&&Date.now()>=session.deadline){finishRound('timeout');return;}const it=session.items[session.index];if(session.mode!=='exam'&&it.graded)return;it.choice=original;it.skipped=false;persistSession();const display=it.order.indexOf(original);renderPlay();$('choice-'+display)?.focus({preventScroll:true});announce((display+1)+'번 보기를 선택했습니다.');}
+function recordGrade(it){if(it.graded)return;const q=BY_ID.get(it.id),ok=it.choice===q.correct;it.graded=true;it.skipped=it.choice===null;
+ const rec=db.records[q.id]||{attempts:0,correct:0,lastCorrect:false,updatedAt:0};rec.attempts++;if(ok)rec.correct++;rec.lastCorrect=ok;rec.updatedAt=Date.now();db.records[q.id]=rec;
+ if(ok){session.streak++;session.maxStreak=Math.max(session.maxStreak,session.streak);it.award=10+Math.min((session.streak-1)*2,10);session.xpEarned+=it.award;db.totalXP+=it.award;db.bestStreak=Math.max(db.bestStreak,session.streak);}else {session.streak=0;it.award=0;}
+}
+function submitPractice(skipped=false){const it=session.items[session.index];if(it.graded||(!skipped&&it.choice===null))return;if(skipped)it.choice=null;syncElapsed();recordGrade(it);persistSession();renderPlay();const ok=it.choice===BY_ID.get(it.id).correct;playTone(ok);$('feedbackHeading')?.focus({preventScroll:true});announce(ok?'정답입니다. '+it.award+' XP를 얻었습니다.':'오답노트에 저장했습니다. 해설을 확인하세요.');}
+function goTo(index){if(!session||session.finished||index<0||index>=session.items.length)return;if(session.mode!=='exam'&&index>session.maxVisited)return;syncElapsed();session.index=index;session.maxVisited=Math.max(session.maxVisited,index);persistSession();renderPlay(true);}
+function primaryAction(){if(view!=='play'||!session||session.finished)return;if(session.deadline&&Date.now()>=session.deadline){finishRound('timeout');return;}const it=session.items[session.index];if(session.mode==='exam'){if(session.index===session.items.length-1)confirmExamSubmit();else{session.maxVisited=Math.max(session.maxVisited,session.index+1);goTo(session.index+1);}}else if(!it.graded){submitPractice();}else if(session.index===session.items.length-1){finishRound('complete');}else{session.maxVisited=Math.max(session.maxVisited,session.index+1);goTo(session.index+1);}}
+function confirmExamSubmit(){const unanswered=session.items.filter(it=>it.choice===null).length;openModal('실전 답안을 제출할까요?',`<p>총 <strong>${session.items.length}문항</strong> 중 <strong>${unanswered}문항</strong>이 미응답입니다.</p><p>제출하면 정답과 해설을 공개하며, 미응답은 오답으로 처리합니다.</p>`,[{label:'계속 풀기'},{label:'제출하고 채점',className:'primary',action:()=>finishRound('submit')}]);}
+function finishRound(reason){if(!session||session.finished)return;if($('modal').open)closeModal();syncElapsed();for(const it of session.items)recordGrade(it);session.finished=true;session.reason=reason;session.finishedAt=Date.now();const correct=session.items.filter(it=>it.choice===BY_ID.get(it.id).correct).length;db.history.push({mode:session.mode,count:session.items.length,correct,date:session.finishedAt});db.history=db.history.slice(-20);db.savedSession=null;saveDB();changeView('result');$('reviewFilter').value='wrong';$('reviewSearch').value='';renderResults();announce('라운드를 완료했습니다. '+session.items.length+'문항 중 '+correct+'문항 정답입니다.');if(reason==='timeout')toast('제한시간이 끝나 답안을 자동 제출했습니다.');}
+function reviewCard(it,index=null){const q=BY_ID.get(it.id),ok=it.choice===q.correct;return `<details class="review-card"><summary><span class="dot-result ${ok?'ok':'bad'}">${ok?'정답':it.choice===null?'미응답':'오답'}</span><span><b>${escapeHTML(q.id)}</b> ${escapeHTML(q.title)}</span></summary><div class="review-content"><p class="stem">${escapeHTML(q.stem).replace(/\n/g,'<br>')}</p>${!ok?`<div class="review-mine"><b>내 답</b> ${it.choice===null?'미응답 / 건너뜀':escapeHTML(q.options[it.choice])}</div>`:''}<div class="review-answer"><b>정답</b> ${escapeHTML(q.options[q.correct])}${q.waves?waveSVG(q.waves[q.correct],'정답 파형'):''}</div><div class="explanation">${rich(q.explain)}</div>${figureAnswers(q)}${q.trap?`<p class="trap"><b>혼동 주의</b> ${escapeHTML(q.trap)}</p>`:''}${sourceHTML(q)}<button class="ghost bookmark ${db.stars.includes(q.id)?'on':''}" data-star-id="${q.id}" style="margin-top:10px" aria-pressed="${db.stars.includes(q.id)}">${db.stars.includes(q.id)?'★ 북마크 해제':'☆ 북마크에 저장'}</button></div></details>`;}
+function renderResults(){if(!session?.finished)return;const n=session.items.length,correct=session.items.filter(it=>it.choice===BY_ID.get(it.id).correct).length,skipped=session.items.filter(it=>it.choice===null).length,score=Math.round(correct/n*100);$('resultScore').textContent=score;$('scoreDial').style.setProperty('--score-angle',(correct/n*360)+'deg');$('resultEyebrow').textContent=session.reason==='timeout'?'TIME IS UP · 자동 제출':'ROUND COMPLETE · '+MODE_NAMES[session.mode];$('resultMessage').textContent=score===100?'이번 라운드, 모두 맞혔어요.':score>=80?'잘하고 있어요. 빈틈만 채워봅시다.':score>=50?'핵심을 잡았어요. 오답을 연결해봅시다.':'첫 확인이 끝났어요. 해설부터 다시 보세요.';$('resultDescription').textContent='점수는 문항별 동일 배점입니다. 굵은 키워드를 가리고 설명할 수 있는지 확인해 보세요.';$('resultChips').innerHTML=`<span>정답 <strong>${correct}/${n}</strong></span><span>오답 <strong>${n-correct-skipped}</strong></span><span>미응답 <strong>${skipped}</strong></span><span>획득 <strong>+${session.xpEarned} XP</strong></span><span>최고 연속 <strong>${session.maxStreak}</strong></span>`;$('retryWrongBtn').disabled=correct===n;$('retryWrongBtn').textContent=correct===n?'이번 라운드 오답 없음':'이번 오답 '+(n-correct)+'문항 다시 풀기';
+ $('breakdownBody').innerHTML=CHAPTERS.filter(c=>session.items.some(it=>BY_ID.get(it.id).chapter===c.id)).map(c=>{const arr=session.items.filter(it=>BY_ID.get(it.id).chapter===c.id),k=arr.filter(it=>it.choice===BY_ID.get(it.id).correct).length,pct=Math.round(k/arr.length*100);return `<tr><td><b>${c.id}. ${escapeHTML(c.short)}</b></td><td>${arr.length}</td><td>${k}</td><td><span class="track"><i style="width:${pct}%"></i></span><span class="percent">${pct}%</span></td></tr>`;}).join('');renderReviewList();}
+function renderReviewList(){if(!session?.finished)return;const filter=$('reviewFilter').value,search=$('reviewSearch').value.trim().toLowerCase();const list=session.items.filter(it=>{const q=BY_ID.get(it.id),ok=it.choice===q.correct;return (filter==='all'||filter==='wrong'&&!ok||filter==='correct'&&ok||filter==='star'&&db.stars.includes(it.id))&&(!search||(q.id+' '+q.title+' '+q.stem+' '+q.explain).toLowerCase().includes(search));});$('reviewCount').textContent=list.length+'문항';$('resultReviews').innerHTML=list.length?list.map(it=>reviewCard(it)).join(''):'<p class="empty-state">해당하는 문항이 없습니다. 필터를 바꾸거나 새 라운드를 시작해 보세요.</p>';}
+function toggleStar(id){const pos=db.stars.indexOf(id);if(pos===-1)db.stars.push(id);else db.stars.splice(pos,1);saveDB();if(view==='play'){renderPlay();$('bookmarkBtn').focus({preventScroll:true});}else {document.querySelectorAll(`[data-star-id="${id}"]`).forEach(el=>{el.classList.toggle('on',pos===-1);el.setAttribute('aria-pressed',String(pos===-1));el.textContent=pos===-1?'★ 북마크 해제':'☆ 북마크에 저장';});}announce(pos===-1?'북마크에 저장했습니다.':'북마크를 해제했습니다.');}
+function showWrongNotebook(){const ids=unresolvedIds();if(!ids.length){openModal('오답노트','<p>아직 남은 오답이 없습니다. 학습에서 틀리거나 건너뛴 문항이 자동으로 여기에 저장됩니다.</p>',[{label:'확인'}]);return;}openModal('남은 오답 '+ids.length+'문항','<p>가장 최근 풀이가 오답인 문항입니다. 다시 맞히면 이 목록에서 제외됩니다.</p><div class="modal-questions">'+ids.map(id=>{const q=BY_ID.get(id);return `<details class="review-card"><summary><b>${id}</b> ${escapeHTML(q.title)}</summary><div class="review-content"><p>${rich(q.explain)}</p>${sourceHTML(q)}</div></details>`;}).join('')+'</div>',[{label:'닫기'},{label:'남은 오답 모두 풀기',className:'primary',action:()=>askReplace(()=>startRound(ids,'남은 오답 집중 학습'))}]);}
+function downloadJSON(data,name){const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
+function exportDB(){syncElapsed();persistSession();downloadJSON({format:'netquest-backup',exportedAt:new Date().toISOString(),data:db},'netquest-progress.json');toast('학습 기록 백업 파일을 만들었습니다.');}
+async function readImport(file){if(!file)return;if(file.size>2000000){toast('2MB 이하의 게임 기록 JSON 파일을 선택하세요.');return;}try{const raw=JSON.parse(await file.text());const candidate=sanitizeDB(raw.format==='netquest-backup'?raw.data:raw,true);openModal('기록을 가져올까요?','<p>현재 브라우저의 기록과 저장된 라운드를 가져온 파일의 기록으로 <strong>교체</strong>합니다. 필요하면 먼저 기존 기록을 내보내세요.</p>',[{label:'취소'},{label:'교체하여 가져오기',className:'primary',action:()=>{db=candidate;session=null;saveDB();changeView('home');renderHome();toast('기록을 가져왔습니다.');}}]);}catch(e){toast('가져오기 실패: '+e.message);}finally{$('importFile').value='';}}
+function playTone(ok){if(!soundOn)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();audioCtx.resume().catch(()=>{});const now=audioCtx.currentTime;[ok?660:240,ok?880:190].forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,now+i*.11);g.gain.linearRampToValueAtTime(.035,now+i*.11+.015);g.gain.exponentialRampToValueAtTime(.001,now+i*.11+.13);o.connect(g);g.connect(audioCtx.destination);o.start(now+i*.11);o.stop(now+i*.11+.15);});}catch(e){/* Audio is optional. */}}
+function showGuide(){openModal('게임 이용 안내',`<h3>학습 → 실전 → 오답 재도전</h3><p><strong>학습 모드</strong>에서는 보기 선택 후 정답 확인을 누르면 바로 해설이 나옵니다. <strong>실전 모드</strong>에서는 모든 학습 챕터가 포함되고, 최종 제출 후 일괄 채점합니다. 실전 중에는 이전 문제로 돌아가 답을 바꿀 수 있습니다.</p><p><strong>오답 재도전</strong>은 가장 최근 풀이가 오답인 문항을 대상으로 합니다. 북마크는 별도로 저장되며 정답을 맞혀도 지워지지 않습니다.</p><h3>점수와 경험치</h3><p>결과 점수는 <strong>정답 수 ÷ 출제 수 × 100</strong>을 반올림합니다. 미응답·건너뜀은 오답입니다. 정답은 10 XP, 2연속부터 2 XP씩 추가되어 문항당 최대 20 XP를 얻습니다. 150 XP마다 레벨이 올라갑니다.</p><h3>90문항의 출처와 범위</h3><p>앞서 만든 <strong>「챕터별 예상문제 90」 PDF</strong>의 1-01~6-15를 같은 번호로 객관식화했습니다. 각 챕터 01~10은 핵심, 11~15는 추가입니다. 복합 서술형 문항의 세부 내용을 하나의 객관식으로 압축했으므로, 원래의 서술·계산·파형 그리기도 함께 연습하세요.</p><p>5번 「신호」 PDF의 p.1–19는 신호, p.20–66은 부호화로 나눴습니다. 이는 <strong>6개 학습 구간</strong>이며 공식 시험 챕터 수를 새로 정한 것이 아닙니다. 기말의 IP 클래스·상세 헤더·TCP 혼잡제어 등을 임의로 추가하지 않았습니다.</p><p>문항 해설에는 <strong>예상문제집 번호·쪽수와 원교안 위치</strong>가 있습니다. 교안과 학생 풀이가 다른 동기식/비동기식, CSMA/CA, 프레임 크기 표기는 적용한 자료를 함께 명시했습니다. 파형 극성은 교안 규칙을 사용합니다.</p><h3>저장·이어하기</h3><p>설치·서버·로그인 없이 실행합니다. 기록은 <strong>현재 브라우저의 로컬 저장소</strong>에만 저장됩니다. 파일 이동, 브라우저 변경, 시크릿 모드, 저장 차단 시 유지되지 않을 수 있으므로 JSON 백업을 이용하세요.</p><p>실전 제한시간은 <strong>저장·종료 중에도 진행</strong>됩니다. 게임을 열어 둔 상태에서 시간이 끝나면 자동 제출하며, 닫아 둔 사이 만료되면 이어하기 시 제출됩니다.</p><h3>키보드</h3><p><strong>1~5</strong>: 보기 선택 · <strong>Enter</strong>: 정답 확인/다음 · 버튼은 Tab으로 이동할 수 있습니다. 소리는 기본적으로 꺼져 있습니다.</p><div class="notice">예상문제를 바탕으로 한 학습 게임입니다. 실제 출제·공식 정답·성적을 보장하지 않습니다.</div>`,[{label:'알겠습니다',className:'primary'}]);}
+function wireEvents(){
+ document.querySelectorAll('[data-mode]').forEach(el=>el.addEventListener('click',()=>setMode(el.dataset.mode)));
+ $('chapterSelect').addEventListener('change',updateSetup);['tierSelect','countSelect','timerSelect'].forEach(id=>$(id).addEventListener('change',updateSetup));
+ $('allChaptersBtn').addEventListener('click',()=>{const inputs=[...document.querySelectorAll('#chapterSelect input')],all=inputs.every(el=>el.checked);inputs.forEach(el=>el.checked=!all);updateSetup();});
+ $('startBtn').addEventListener('click',()=>askReplace(()=>startRound()));$('resumeBtn').addEventListener('click',resumeRound);
+ $('options').addEventListener('click',e=>{const el=e.target.closest('[data-option]');if(el&&!el.disabled)selectOption(Number(el.dataset.option));});
+ $('mainActionBtn').addEventListener('click',primaryAction);$('prevBtn').addEventListener('click',()=>goTo(session.index-1));
+ $('skipBtn').addEventListener('click',()=>{if(session.mode==='exam'){session.items[session.index].choice=null;persistSession();renderPlay();}else submitPractice(true);});
+ $('navGrid').addEventListener('click',e=>{const el=e.target.closest('[data-nav]');if(el&&!el.disabled)goTo(Number(el.dataset.nav));});
+ $('bookmarkBtn').addEventListener('click',()=>toggleStar(session.items[session.index].id));
+ document.addEventListener('click',e=>{const el=e.target.closest('[data-star-id]');if(el)toggleStar(el.dataset.starId);});
+ $('scratchpad').addEventListener('input',()=>{if(session){session.note=$('scratchpad').value.slice(0,20000);persistSession();}});
+ $('saveExitBtn').addEventListener('click',saveAndHome);$('logoHome').addEventListener('click',saveAndHome);$('resultHomeBtn').addEventListener('click',()=>{changeView('home');renderHome();});$('examSubmitBtn').addEventListener('click',confirmExamSubmit);
+ $('reviewFilter').addEventListener('change',renderReviewList);$('reviewSearch').addEventListener('input',renderReviewList);
+ $('retryWrongBtn').addEventListener('click',()=>{const ids=session.items.filter(it=>it.choice!==BY_ID.get(it.id).correct).map(it=>it.id);startRound(ids,'이번 오답 다시 풀기');});$('retryAllBtn').addEventListener('click',()=>{const ids=session.items.map(it=>it.id);startRound(ids,'같은 문제 다시 풀기');});
+ $('downloadResultBtn').addEventListener('click',()=>{if(!session?.finished)return;downloadJSON({format:'netquest-round-result',bankVersion:BANK_VERSION,completedAt:new Date(session.finishedAt).toISOString(),mode:MODE_NAMES[session.mode],total:session.items.length,correct:session.items.filter(it=>it.choice===BY_ID.get(it.id).correct).length,xp:session.xpEarned,items:session.items.map(it=>{const q=BY_ID.get(it.id);return {id:q.id,chapter:q.chapter,question:q.stem,chosen:it.choice===null?null:q.options[it.choice],answer:q.options[q.correct],correct:it.choice===q.correct,explanation:q.explain,source:q.source};})},'netquest-round-result.json');});
+ $('wrongNotebookBtn').addEventListener('click',showWrongNotebook);$('bookmarkStudyBtn').addEventListener('click',()=>{if(!db.stars.length){toast('문제 화면의 ☆ 다시 보기를 눌러 저장하세요.');return;}askReplace(()=>startRound(db.stars,'북마크 집중 학습'));});
+ $('guideBtn').addEventListener('click',showGuide);$('soundBtn').addEventListener('click',()=>{soundOn=!soundOn;$('soundBtn').textContent=soundOn?'소리 켜짐':'소리 꺼짐';$('soundBtn').setAttribute('aria-pressed',String(soundOn));if(soundOn)playTone(true);});
+ $('modalClose').addEventListener('click',closeModal);$('modal').addEventListener('click',e=>{if(e.target===$('modal')){const r=$('modal').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeModal();}});
+ $('exportBtn').addEventListener('click',exportDB);$('importBtn').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',()=>readImport($('importFile').files[0]));
+ $('resetBtn').addEventListener('click',()=>openModal('학습 기록을 초기화할까요?','<p>경험치, 정오답 기록, 북마크, 완료 기록, 진행 중 라운드를 모두 지웁니다. 문제 데이터는 지우지 않습니다.</p><p>필요하면 먼저 <strong>기록 내보내기</strong>로 백업하세요.</p>',[{label:'취소'},{label:'모두 초기화',className:'danger-btn',action:()=>{db=freshDB();session=null;saveDB();renderHome();toast('학습 기록을 초기화했습니다.');}}]));
+ document.addEventListener('keydown',e=>{if(view!=='play'||!session||session.finished||$('modal').open||e.altKey||e.ctrlKey||e.metaKey||e.repeat)return;const tag=e.target.tagName;if(['INPUT','TEXTAREA','SELECT'].includes(tag)||e.target.isContentEditable)return;if(/^[1-5]$/.test(e.key)){e.preventDefault();const it=session.items[session.index];selectOption(it.order[Number(e.key)-1]);}else if(e.key==='Enter'&&(tag!=='BUTTON'||e.target.closest('[data-option]'))){e.preventDefault();if(!$('mainActionBtn').disabled)primaryAction();}});
+ window.addEventListener('beforeunload',()=>{syncElapsed();if(view==='play')persistSession();});
+ document.addEventListener('visibilitychange',()=>{if(view==='play'&&session&&!session.finished){syncElapsed();persistSession();if(!document.hidden&&session.deadline&&Date.now()>=session.deadline)finishRound('timeout');}});
+ let ticks=0;setInterval(()=>{if(view==='play'&&session&&!session.finished){syncElapsed();renderClock();if(session.deadline&&Date.now()>=session.deadline){finishRound('timeout');return;}if(++ticks%5===0)persistSession();}},1000);
+}
+try{
+ BANK=JSON.parse($('question-bank').textContent);validateBank();BY_ID=new Map(BANK.map(q=>[q.id,q]));db=loadDB();
+ $('chapterSelect').innerHTML=CHAPTERS.map(c=>`<label class="chapter-check"><input type="checkbox" value="${c.id}" checked><span><b>${c.id}. ${escapeHTML(c.short)}</b><small>${escapeHTML(c.file)}</small></span></label>`).join('');
+ wireEvents();renderHome();
+}catch(e){$('main').innerHTML='<section class="panel" style="padding:30px"><h1>게임을 불러오지 못했습니다.</h1><p style="margin-top:12px">HTML 파일이 완전히 내려받아졌는지 확인하고 다시 열어 주세요.</p><p class="small muted">'+escapeHTML(e.message)+'</p></section>';console.error(e);}
+</script>
 </body>
 </html>
